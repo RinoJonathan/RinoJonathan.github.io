@@ -755,7 +755,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   animation-direction: alternate;
 }
 
-.hero__pattern {
+/*.hero__pattern {
   position: absolute;
   top: 0;
   left: 0;
@@ -763,10 +763,10 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   width: 100%;
   height: 100%;
   opacity: 0.5;
-  background-image: url("../img/hero_pattern.png");
+  background-image: url("../img/main_pattern.png");
   background-repeat: repeat-x;
   background-position: bottom left;
-}
+}*/
 
 .hero__content {
   padding-top: 70px;
@@ -948,7 +948,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.1));
 }
 
-.experience::after {
+/*.experience::after {
   position: absolute;
   z-index: 50;
   bottom: 0;
@@ -960,7 +960,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: url("../img/section_pattern01.png");
   opacity: 1;
   background-position: -80px 50px;
-}
+}*/
 
 .experience__hollow-arrow {
   width: 100%;
@@ -1093,7 +1093,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.1));
 }
 
-.features::after {
+/*.features::after {
   position: absolute;
   z-index: 50;
   top: 0;
@@ -1105,7 +1105,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: url("../img/section_pattern02.png");
   opacity: 1;
   background-position: 80px -75px;
-}
+}*/
 
 .features__wrapper {
   position: relative;
@@ -1234,7 +1234,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.1));
 }
 
-.realizations::after {
+/*.realizations::after {
   position: absolute;
   z-index: 50;
   top: 0;
@@ -1245,7 +1245,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   content: " ";
   background-image: url("../img/section_pattern03.png");
   opacity: 1;
-}
+}*/
 
 .realizations__wrapper {
   position: relative;
@@ -1567,7 +1567,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.1));
 }
 
-.contact::after {
+/*.contact::after {
   position: absolute;
   z-index: 50;
   top: 0;
@@ -1579,7 +1579,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: url("../img/section_pattern04.png");
   opacity: 1;
   background-position: 110px -110px;
-}
+}*/
 
 .contact__wrapper {
   position: relative;
