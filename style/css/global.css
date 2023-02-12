@@ -2932,18 +2932,8 @@ i:hover,  .header__hamburger:hover {
   transform: scale(1.5);
 }
 
-
-/*
-.header__hamburger{
-  transition: transform .3s ease-in-out;
+/*to prevent blue tint on a tags*/
+a {
+  -webkit-tap-highlight-color: transparent;
 }
 
-.header__hamburger:hover{
-   transform: scale(1.2);
-}
-*/
-
-html{
-
-  font-size:2em;
-}
