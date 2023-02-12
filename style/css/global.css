@@ -666,7 +666,7 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
 .header__social-icons {
   float: right;
   margin-left: 50px;
-  margin-top: 16px;
+  margin-right: 10px;
 }
 
 .header__social-icons a {
