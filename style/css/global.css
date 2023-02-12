@@ -791,13 +791,13 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
 .hero__title-large {
   color: rgba(255, 255, 255, 0.9);
   font-weight: 700;
-  font-size: 100px;
+  font-size: 60px;
 }
 
 .hero__title-small {
   color: rgba(255, 255, 255, 0.9);
   font-weight: 700;
-  font-size: 55px;
+  font-size: 40px;
   margin-left: 20px;
   margin-top: 15px;
 }
@@ -2917,3 +2917,33 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
 }
 
 /*# sourceMappingURL=global.css.map */
+
+
+/*preventing yellow highlight*/
+::selection, a {
+   background: transparent;
+}
+
+i, .header__hamburger {
+  transition: transform .3s ease-in-out;
+}
+
+i:hover,  .header__hamburger:hover {
+  transform: scale(1.5);
+}
+
+
+/*
+.header__hamburger{
+  transition: transform .3s ease-in-out;
+}
+
+.header__hamburger:hover{
+   transform: scale(1.2);
+}
+*/
+
+html{
+
+  font-size:2em;
+}
