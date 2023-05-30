@@ -1,12 +1,16 @@
 PAGE NO:
+
 DATE:
 EX.NO:1: Implement Linear Search. Determine the time required
 to search for an element. Repeat the experiment for different
 values of n, the number of elements in the list to be searched and
 plot a graph of the time taken versus n.
 AIM:
+
 ALGORITHM:
-PAGE NO:
+
+PAGE NO:
+
 PROGRAM:
 #include<stdio.h>
 #include<stdlib.h>
@@ -30,7 +34,9 @@ printf("Element Is Not Present In Array\n");
 return -1;
 }
 int main(){
-}
+
+PAGE NO:
+
 intn,x;
 printf("Enter The No Of Elements In The Array:");
 scanf("%d",&n);
@@ -44,18 +50,25 @@ printf("Enter The Element You Wish To Find:");
 scanf("%d",&x);
 linear_search(arr,n,x);
 return 0;
-PAGE NO:
+}
+
+PAGE NO:
+
 RESULT:
-PAGE NO:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:2 Implement recursive Binary Search. Determine the
 time required to search an element. Repeat the experiment
 for different values of n, the number of elements in the list
 to be searched and plot a graph of the time taken versus n.
 AIM:
+
 ALGORITHM:
-PAGE NO:
+
+PAGE NO:
+
 PROGRAM:
 #include<stdio.h>
 #include<stdlib.h>
@@ -65,7 +78,6 @@ Intbinary_search(intarr[], int l, intr,int x)
 if(r>=1)
 {
 int mid=l+(r-l)/2;
-}
 if(arr[mid]==x){
 return mid;
 }
@@ -75,6 +87,7 @@ returnbinary_search(arr,l,mid-1,x);
 returnbinary_search(arr,mid+1,r,x);
 }
 return -1;
+}
 int main()
 {
 inti,n,index,x;
@@ -90,9 +103,9 @@ scanf("%d",&arr[i]);
 printf("Enter The Element To Be Searched :");
 scanf("%d",&x);
 start=clock();
-}
-}
-PAGE NO:
+
+PAGE NO:
+
 index=binary_search(arr,0,n-1,x);
 end=clock();
 if(index==-1)
@@ -101,21 +114,30 @@ printf("%d found at index\n",x);
 }
 else
 {
-}
 printf("%d Found At Index %d In The List \n",x);
+}
 time_taken=((double)(end-start))/CLOCKS_PER_SEC;
 printf("Time Taken For Binary Search :%f seconds\n",time_taken);
 return 0;
+}
+}
+
+PAGE NO:
+
 RESULT:
-PAGE NO:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
-EX.NO:3 Given a text txt [0...n-1] and a pattern pat [0...m-
-1], write a function search (char pat [ ], char txt [ ]) that
+EX.NO:3 Given a text txt [0...n-1] and a pattern pat [0...m1], write a function search (char pat [ ], char txt [ ]) that
 prints all occurrences of pat [ ] in txt [ ]. You may assume
 that n > m.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include<stdio.h>
 #include<string.h>
@@ -138,7 +160,9 @@ else
 printf("Not Found\n");
 }
 return 0;
-PAGE NO:
+
+PAGE NO:
+
 }
 int match(char text[], char pattern[])
 {
@@ -162,8 +186,9 @@ e++;
 else
 {
 break;
-PAGE NO:
-}
+
+PAGE NO:
+
 }
 }
 if(d==pattern_length)
@@ -172,10 +197,14 @@ return position;
 }
 }
 return -1;
-PAGE NO:
+}
+
+PAGE NO:
+
 RESULT:
-PAGE NO:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:4 Sort a given set of elements using the Insertion
 sort and Heap sort methods and determine the time
@@ -183,7 +212,11 @@ required to sort the elements. Repeat the experiment for
 different values of n, the number of elements in the list to
 be sorted and plot a graph of the time taken versus n.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include<stdio.h>
 #include<stdlib.h>
@@ -201,12 +234,15 @@ arr[j+1]=arr[j]; }
 arr[j+1]=key;
 }
 }
+
 voidheapify(intarr[], intn,int i)
 {
 int largest=i;
 int l=2*i+1;
 int r=2*i+2;
-PAGE NO:
+
+PAGE NO:
+
 if(l<n&&arr[i]>arr[largest])
 largest=1;
 if(r<n&&arr[r]>arr[largest])
@@ -230,8 +266,9 @@ arr[i]=temp;
 heapify(arr,i,0);
 }
 }
-PAGE NO:
-PAGE NO:
+
+PAGE NO:
+
 int main()
 {
 intn,i;
@@ -249,25 +286,36 @@ CPU_time_used=((double)(end-start))/CLOCKS_PER_SEC;
 printf("Time Taken By Insertion Sort :%f seconds\n",CPU_time_used);
 return 0;
 }
+
+PAGE NO:
+
 RESULT:
-PAGE NO:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:5 Develop a program to implement graph traversal
 using Breadth First Search.
 AIM:
+
 .
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include<stdio.h>
 #include<stdlib.h>
 #define SIZE 10
+
 // function to add an edge in the graph
 voidaddEdge(intadjMatrix[][SIZE], int u, int v) {
 adjMatrix[u][v] = 1;
 adjMatrix[v][u] = 1;
 }
+
 // function to perform breadth first search traversal
+
 voidbfs(intadjMatrix[][SIZE], int visited[], int start, int n) {
 int queue[SIZE], front = 0, rear = 0, u;
 visited[start] = 1;
@@ -278,7 +326,9 @@ printf("%d ", u);
 front++;
 int v;
 for(v = 0; v < n; v++) {
-PAGE NO:
+
+PAGE NO:
+
 if(adjMatrix[u][v] == 1 && visited[v] == 0) {
 visited[v] = 1;
 rear++;
@@ -302,17 +352,25 @@ printf("Enter the starting node for BFS traversal: ");
 scanf("%d", &start);
 printf("BFS traversal is: ");
 bfs(adjMatrix, visited, start, n);
-PAGE NO:
-return}
-0;
-PAGE NO:
+
+PAGE NO:
+
+return 0;
+}
+
 RESULT:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:6 Develop a program to implement graph traversal
 using Depth First Search.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #include <stdbool.h>
@@ -336,7 +394,9 @@ int m;
 printf("Enter the number of vertices: ");
 scanf("%d", &n);
 printf("Enter the number of edges: ");
-PAGE NO:
+
+PAGE NO:
+
 scanf("%d", &m);
 inti,j;
 // initialize the adjacency matrix with 0
@@ -360,22 +420,29 @@ visited[i] = false;
 printf("DFS Traversal: ");
 for (i = 0; i < n; i++)
 {
-PAGE NO:
+
+PAGE NO:
+
 if (!visited[i])
 dfs(i);
 }
 return 0;
 }
-PAGE NO:
+
 RESULT:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:7 From a given vertex in a weighted connected
 graph, develop a program to find the shortest paths to
 other vertices using Dijkstra’s algorithm.
 AIM:
+
 ALGORITHM:
-PAGE NO:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #include <stdbool.h>
@@ -399,7 +466,9 @@ printf("%d \t\t %d\n", i, dist[i]);
 }
 voiddijkstra(int graph[V][V], intsrc)
 {
-PAGE NO:
+
+PAGE NO:
+
 intdist[V];
 boolsptSet[V];
 int i;
@@ -424,23 +493,33 @@ int main()
 {
 int graph[V][V] = {
 {0, 2, 0, 3, 0},{2, 0, 4, 0, 0},{0, 4, 0, 1, 5},
+
+PAGE NO:
+
 {3, 0, 1, 0, 7},{0, 0, 5, 7, 0}};
 intsrc = 0; // Source vertex
 dijkstra(graph, src);
 return 0;
 }
-PAGE NO:
+
 RESULT:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:8 Find the minimum cost spanning tree of a given
 undirected graph using Prim’s algorithm.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #include <limits.h>
 #define V 5
+
 intminKey(int key[], intmstSet[]) {
 int min = INT_MAX, min_index;
 int v;
@@ -449,15 +528,19 @@ if (mstSet[v] == 0 && key[v] < min)
 min = key[v], min_index = v;
 returnmin_index;
 }
+
 voidprintMST(int parent[], int graph[V][V]) {
 printf("Edge \tWeight\n");
 int i;
 for ( i = 1; i < V; i++)
 printf("%d - %d \t%d \n", parent[i], i, graph[i][parent[i]]);
 }
+
 voidprimMST(int graph[V][V]) {
 int parent[V];
-PAGE NO:
+
+PAGE NO:
+
 int key[V];
 intmstSet[V];
 inti,count;
@@ -481,19 +564,26 @@ int graph[V][V] = {{0, 2, 0, 6, 0},
 {2, 0, 3, 8, 5},
 {0, 3, 0, 0, 7},
 {6, 8, 0, 0, 9},
-PAGE NO:
+
+PAGE NO:
+
 {0, 5, 7, 9, 0}};
 primMST(graph);
 return 0;
 }
-PAGE NO:
+
 RESULT:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
-EX.NO:9 Implement Floyd’s algorithm for the All-Pairs-
-Shortest-Paths problem.
+EX.NO:9 Implement Floyd’s algorithm for the All-PairsShortest-Paths problem.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #include <limits.h>
@@ -516,10 +606,12 @@ dist[i][j] = dist[i][k] + dist[k][j];
 }
 }
 }
-PAGE NO:
+
+PAGE NO:
+
 printSolution(dist);
 }
-PAGE NO:
+
 voidprintSolution(intdist[][V])
 {
 printf ("The following matrix shows the shortest distances between every pair
@@ -541,24 +633,33 @@ int main()
 int graph[V][V] = {{0, 5, INT_MAX, 10},
 {INT_MAX, 0, 3, INT_MAX},
 {INT_MAX, INT_MAX, 0, 1},
+
+PAGE NO:
+
 {INT_MAX, INT_MAX, INT_MAX, 0}};
 floydWarshall(graph);
 return 0;
 }
-PAGE NO:
+
 RESULT:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:10 Compute the transitive closure of a given
 directed graph using Warshall's algorithm.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #define MAX_VERTICES 100
 intadjacency_matrix[MAX_VERTICES][MAX_VERTICES];
 intnum_vertices;
-PAGE NO:
+
 voidcompute_transitive_closure() {
 int i, j, k;
 for (k = 0; k <num_vertices; k++) {
@@ -577,9 +678,13 @@ for (i = 0; i <num_vertices; i++) {
 for (j = 0; j <num_vertices; j++) {
 printf("%d ", adjacency_matrix[i][j]);
 }
+
+PAGE NO:
+
 printf("\n");
 }
 }
+
 int main() {
 int i, j;
 printf("Enter the number of vertices in the graph: ");
@@ -594,16 +699,23 @@ compute_transitive_closure();
 print_adjacency_matrix();
 return 0;
 }
-PAGE NO:
+
+PAGE NO:
+
 RESULT:
-PAGE NO:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:11 Develop a program to find out the maximum and
 minimum numbers in a given list of n numbers using the
 divide and conquer technique.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 voidfindMinMax(intarr[], int low, int high, int* min, int* max) {
@@ -623,15 +735,19 @@ if (arr[low] <arr[high]) {
 }
 return;
 }
-PAGE NO:
+
 mid = (low + high) / 2;
 findMinMax(arr, low, mid, &min1, &max1);
 findMinMax(arr, mid + 1, high, &min2, &max2);
+
+PAGE NO:
+
 if (min1 < min2) {
 *min = min1;
 } else {
 *min = min2;
 }
+
 if (max1 > max2) {
 *max = max1;
 } else {
@@ -648,13 +764,17 @@ scanf("%d", &arr[i]);
 }
 findMinMax(arr, 0, n - 1, &min, &max);
 printf("Minimum element is %d\n", min);
-PAGE NO:
+
+PAGE NO:
+
 printf("Maximum element is %d\n", max);
 return 0;
 }
-PAGE NO:
+
 RESULT:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:12 Implement Merge sort and Quick sort methods to
 sort an array of elements and determine the time required
@@ -662,7 +782,11 @@ to sort. Repeat the experiment for different values of n, the
 number of elements in the list to be sorted and plot a graph
 of the time taken versus n.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #include <stdlib.h>
@@ -686,7 +810,9 @@ i++;
 }
 else {
 arr[k] = R[j];
-PAGE NO:
+
+PAGE NO:
+
 j++;
 }
 k++;
@@ -710,7 +836,9 @@ mergeSort(arr, mid + 1, right);
 merge(arr, left, mid, right);
 }
 }
-PAGE NO:
+
+PAGE NO:
+
 int partition(int arr[], int low, int high) {
 int pivot = arr[high];
 int i = (low - 1);
@@ -734,8 +862,9 @@ int pi = partition(arr, low, high);
 quickSort(arr, low, pi - 1);
 quickSort(arr, pi + 1, high);
 }
-PAGE NO:
-PAGE NO:
+
+PAGE NO:
+
 }
 int main() {
 int n;
@@ -759,17 +888,26 @@ printf("Time taken by Merge Sort: %f seconds\n", cpu_time_used);
 start = clock();
 quickSort(arr, 0, n - 1);
 end = clock();
-}
+
+PAGE NO:
+
 cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
 printf("Time taken by Quick Sort: %f seconds\n", cpu_time_used);
 return 0;
-PAGE NO:
+}
+
 RESULT:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:13 Implement N Queens problem using Backtracking.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #include <stdbool.h>
@@ -793,7 +931,9 @@ if (board[i][j]) {
 return false;
 }}
 for (i = row, j = col; j >= 0 && i < N; i++, j--) {
-PAGE NO:
+
+PAGE NO:
+
 if (board[i][j]) {
 return false;
 }}
@@ -817,22 +957,30 @@ int board[N][N] = {0};
 if (solveNQueens(board, 0)) {
 printf("Solution found:\n");
 printBoard(board);
-PAGE NO:
-}
+
+PAGE NO:
+
 } else {
 printf("Solution not found.\n");
 }
 return 0;
-PAGE NO:
+}
+
 RESULT:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:14 Implement any scheme to find the optimal
 solution for the Traveling Salesperson problem and then
 solve the same problem instance using any approximation
 algorithm and determine the error in the approximation.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #include <stdlib.h>
@@ -843,7 +991,7 @@ typedef struct {
 int x;
 int y;
 } Point;
-PAGE NO:
+
 double distance(Point p1, Point p2) {
 int dx = p2.x - p1.x;
 int dy = p2.y - p1.y;
@@ -853,13 +1001,16 @@ double tsp_optimal(Point points[], int num_points) {
 int i, j, k;
 int num_permutations = 1 << num_points; // 2^num_points
 double min_distance = INT_MAX;
+
 for (i = 1; i < num_permutations; i++) {
 int visited[MAX_POINTS] = {0};
+
+PAGE NO:
+
 int current_point = 0; // Starting point is always 0
 int count = 1; // Count of visited points
 double path_distance = 0.0;
-PAGE NO:
-}
+
 visited[current_point] = 1;
 for (j = 1; j < num_points; j++) {
 if ((i & (1 << j)) && !visited[j]) {
@@ -873,9 +1024,15 @@ if (count == num_points && path_distance < min_distance) {
 path_distance += distance(points[current_point], points[0]);
 min_distance = path_distance;
 }
+}
+
 return min_distance;
 }
+
 double tsp_approximation(Point points[], int num_points) {
+
+PAGE NO:
+
 int visited[MAX_POINTS] = {0};
 int current_point = 0;
 visited[current_point] = 1;
@@ -897,10 +1054,12 @@ total_distance += min_distance;
 current_point = next_point;
 }
 total_distance += distance(points[current_point], points[0]);
-PAGE NO:
-}
+
 return total_distance;
-PAGE NO:
+}
+
+PAGE NO:
+
 int main() {
 int num_points;
 printf("Enter the number of points: ");
@@ -918,14 +1077,22 @@ printf("Optimal Distance: %.2f\n", optimal_distance);
 printf("Approximation Distance: %.2f\n", approximation_distance);
 return 0;
 }
+
+PAGE NO:
+
 RESULT:
-PAGE NO:
-PAGE NO:
+
+PAGE NO:
+
 DATE:
 EX.NO:15 Implement randomized algorithms for finding the
 kth smallest number.
 AIM:
+
 ALGORITHM:
+
+PAGE NO:
+
 PROGRAM:
 #include <stdio.h>
 #include <stdlib.h>
@@ -947,10 +1114,14 @@ i++;
 swap(&arr[i], &arr[j]);
 }
 }
+
 swap(&arr[i + 1], &arr[high]);
-PAGE NO:
+
+PAGE NO:
+
 return i + 1;
 }
+
 int randomizedSelect(int arr[], int low, int high, int k)
 {
 if (low == high) {
@@ -965,11 +1136,14 @@ return arr[k];
 else if (k < pivotIndex) {
 return randomizedSelect(arr, low, pivotIndex - 1, k);
 }
+
 else {
 return randomizedSelect(arr, pivotIndex + 1, high, k);
 }
 }
-PAGE NO:
+
+PAGE NO:
+
 int main()
 {
 int arr[] = { 3, 1, 7, 4, 5, 9, 2 };
@@ -987,6 +1161,8 @@ int kthSmallest = randomizedSelect(arr, 0, n - 1, k);
 printf("kth smallest element: %d\n", kthSmallest);
 return 0;
 }
-PAGE NO:
+
+PAGE NO:
+
 RESULT:
-PAGE NO:
+
