@@ -703,7 +703,9 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   width: 100%;
   height: 100%;
   background-image: url("../img/hero_background.jpg");
-  background-repeat: repeat;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 @-webkit-keyframes HeroGradient {
@@ -1048,6 +1050,14 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
 
 .experience__icon--bootstrap {
   background-image: url("../img/exp/exp_bootstrap.svg");
+}
+
+.experience__icon--Unity {
+  background-image: url("../img/exp/exp_unity.svg");
+}
+
+.experience__icon--Blender {
+  background-image: url("../img/exp/exp_blender.svg");
 }
 
 .experience__icon--foundation {
