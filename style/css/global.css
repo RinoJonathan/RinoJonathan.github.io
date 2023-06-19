@@ -2947,3 +2947,22 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+.external_thumb {
+
+  height: 6em;
+  width: 12em;
+  clear: both;
+  display: block;
+}
+
+.external_show {
+  padding-bottom: 25px;
+}
+
+.OP_head {
+
+  margin-top: 4em;
+  display: block;
+  clear:both;
+  color: white;
+}
