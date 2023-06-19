@@ -1050,6 +1050,14 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: url("../img/exp/exp_bootstrap.svg");
 }
 
+.experience__icon--Unity {
+  background-image: url("../img/exp/exp_unity.svg");
+}
+
+.experience__icon--Blender {
+  background-image: url("../img/exp/exp_blender.svg");
+}
+
 .experience__icon--foundation {
   background-image: url("../img/exp/exp_foundation-glasses.svg");
 }
