@@ -1,0 +1,1365 @@
+ 1
+Write the Echo client and server programs using UDP. The Echo clients should verify whether the text
+string they received from the server is the same text string that they sent or not.
+give java program
+
+
+
+import java.net.*;
+
+public class UDPEchoServer {
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket(9876)) {
+            byte[] buffer = new byte[1024];
+
+            while (true) {
+                DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
+                socket.receive(receivePacket);
+
+                String receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
+                System.out.println("Received: " + receivedMessage);
+
+                DatagramPacket sendPacket = new DatagramPacket(buffer, buffer.length, receivePacket.getAddress(), receivePacket.getPort());
+                socket.send(sendPacket);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+---
+import java.net.*;
+
+public class UDPEchoClient {
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket()) {
+            InetAddress serverAddress = InetAddress.getLocalHost();
+            String message = "Hello, Server!";
+
+            byte[] sendData = message.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, 9876);
+            socket.send(sendPacket);
+
+            byte[] receiveData = new byte[1024];
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+            socket.receive(receivePacket);
+
+            String echoedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength()).trim();
+            System.out.println("Echoed: " + echoedMessage);
+
+            if (message.equals(echoedMessage)) {
+            System.out.println("Echoed: " + message);
+                System.out.println("Echo verification successful!");
+            } else {
+            System.out.println("Echoed: " + message);
+                System.out.println("Echo verification failed!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+---
+
+2. Write a programs in C: hello_server (The client connects to the server, sends the string “Hello, world!”,
+then closes the UDP connection)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <arpa/inet.h>
+
+#define PORT 9876
+#define BUFFER_SIZE 1024
+
+int main() {
+    int sockfd;
+    struct sockaddr_in serverAddr, clientAddr;
+    socklen_t addrLen = sizeof(clientAddr);
+    char buffer[BUFFER_SIZE];
+
+    // Create UDP socket
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+        perror("Socket creation error");
+        exit(EXIT_FAILURE);
+    }
+
+    // Configure server address
+    memset(&serverAddr, 0, sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(PORT);
+
+    // Bind the socket
+    if (bind(sockfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1) {
+        perror("Bind error");
+        close(sockfd);
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Server listening on port %d...\n", PORT);
+
+    // Receive data from the client
+    ssize_t recvLen = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, &addrLen);
+    if (recvLen == -1) {
+        perror("Receive error");
+        close(sockfd);
+        exit(EXIT_FAILURE);
+    }
+
+    buffer[recvLen] = '\0'; // Null-terminate the received data
+
+    printf("Received from client: %s\n", buffer);
+
+    // Cleanup
+    close(sockfd);
+
+    return 0;
+}
+
+
+---
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <arpa/inet.h>
+
+#define SERVER_IP "127.0.0.1"  // Replace with the server's IP address
+#define PORT 9876
+#define BUFFER_SIZE 1024
+
+int main() {
+    int sockfd;
+    struct sockaddr_in serverAddr;
+    char message[] = "Hello, world!";
+
+    // Create UDP socket
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+        perror("Socket creation error");
+        exit(EXIT_FAILURE);
+    }
+
+    // Configure server address
+    memset(&serverAddr, 0, sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = inet_addr(SERVER_IP);
+    serverAddr.sin_port = htons(PORT);
+
+    // Send data to the server
+    if (sendto(sockfd, message, strlen(message), 0, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1) {
+        perror("Sendto error");
+        close(sockfd);
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Message sent to server: %s\n", message);
+
+    // Cleanup
+    close(sockfd);
+
+    return 0;
+}
+
+
+---
+
+4 Write a simple HTTP web client program using TCP sockets to download a web page. Get the URL and
+pass it for buffering the content and write it as a html file and make it to get downloaded.
+
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+public class SimpleWebClient {
+    public static void main(String[] args) {
+        String url = "http://www.example.com"; // Replace with your desired URL
+
+        try {
+            // Parse URL to extract host and path
+            String[] urlParts = url.split("/");
+            String host = urlParts[2];
+            String path = "/" + String.join("/", java.util.Arrays.copyOfRange(urlParts, 3, urlParts.length));
+
+            // Create socket connection
+            try (Socket socket = new Socket(host, 80);
+                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                 BufferedWriter fileWriter = new BufferedWriter(new FileWriter("downloaded_page.html"))) {
+
+                // Send HTTP GET request
+                out.println("GET " + path + " HTTP/1.1");
+                out.println("Host: " + host);
+                out.println("Connection: close");
+                out.println();
+
+                // Read and write the content to a file
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    System.out.println(inputLine); // Optional: Print the content to console
+                    fileWriter.write(inputLine);
+                }
+
+                System.out.println("Web page downloaded successfully!");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+----
+
+
+6 Write a program to implement the DNS using UDP sockets. The DNS should have different domains
+with corresponding IP addresses. Resolve the user given domain with the IP and display it to the user.
+Also indicate the error message to the user when domain is not resolved .
+
+import java.net.*;
+
+public class DNSServer {
+    private static final int SERVER_PORT = 9876;
+
+    public static void main(String[] args) {
+        try (DatagramSocket serverSocket = new DatagramSocket(SERVER_PORT)) {
+            System.out.println("DNS Server is running...");
+
+            while (true) {
+                byte[] receiveData = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+                serverSocket.receive(receivePacket);
+                String domain = new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+                InetAddress ipAddress = InetAddress.getByName(resolveDomain(domain));
+                byte[] sendData = ipAddress.getHostAddress().getBytes();
+
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+                serverSocket.send(sendPacket);
+                System.out.println("Resolved " + domain + " to IP: " + ipAddress.getHostAddress());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String resolveDomain(String domain) {
+        // Simulate DNS resolution by mapping domains to IP addresses
+        switch (domain.toLowerCase()) {
+            case "example.com":
+                return "192.168.1.1";
+            case "google.com":
+                return "172.217.168.46";
+            case "github.com":
+                return "140.82.113.4";
+            default:
+                return "Domain not resolved";
+        }
+    }
+}
+
+--
+
+import java.net.*;
+
+public class DNSClient {
+    private static final int SERVER_PORT = 9876;
+
+    public static void main(String[] args) {
+        try (DatagramSocket clientSocket = new DatagramSocket()) {
+            InetAddress serverAddress = InetAddress.getLocalHost(); // Replace with the actual server address
+
+            String domain = "example.com";
+            byte[] sendData = domain.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, SERVER_PORT);
+
+            clientSocket.send(sendPacket);
+
+            byte[] receiveData = new byte[1024];
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+            clientSocket.receive(receivePacket);
+            String ipAddress = new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+            if (!ipAddress.equals("Domain not resolved")) {
+                System.out.println("Resolved " + domain + " to IP: " + ipAddress);
+            } else {
+                System.out.println("Error: " + ipAddress);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+------
+
+
+7 Write a program to implement ARP protocols .
+
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+public class ARPProgram {
+    public static void main(String[] args) {
+        try {
+            String targetIP = "192.168.1.9"; // Replace with the target IP address
+
+            // Get the MAC address corresponding to the target IP address
+            byte[] targetMAC = getMACAddress(targetIP);
+
+            if (targetMAC != null) {
+                System.out.println("MAC Address for " + targetIP + ": " + bytesToHex(targetMAC));
+            } else {
+                System.out.println("Unable to resolve MAC address for " + targetIP);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static byte[] getMACAddress(String targetIP) {
+        try {
+            InetAddress ipAddress = InetAddress.getByName(targetIP);
+            NetworkInterface networkInterface = NetworkInterface.getByInetAddress(ipAddress);
+
+            if (networkInterface != null) {
+                return networkInterface.getHardwareAddress();
+            }
+        } catch (UnknownHostException | SocketException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static String bytesToHex(byte[] bytes) {
+        StringBuilder hexStringBuilder = new StringBuilder();
+
+        for (byte b : bytes) {
+            hexStringBuilder.append(String.format("%02X", b));
+            hexStringBuilder.append(":");
+        }
+
+        // Remove the trailing colon
+        if (hexStringBuilder.length() > 0) {
+            hexStringBuilder.setLength(hexStringBuilder.length() - 1);
+        }
+
+        return hexStringBuilder.toString();
+    }
+}
+
+
+--------
+
+User
+8 Write a program to implement CRC algorithm for error detection technique. in java
+give me a simple and easy program
+
+import java.util.Scanner;
+
+public class CRCErrorDetection {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input message
+        System.out.print("Enter the message (binary): ");
+        String message = scanner.nextLine();
+
+        // Input polynomial (generating polynomial)
+        System.out.print("Enter the polynomial (binary): ");
+        String polynomial = scanner.nextLine();
+
+        // Perform CRC error detection
+        String remainder = performCRC(message, polynomial);
+
+        // Display results
+        System.out.println("Message with CRC: " + message + remainder);
+        System.out.println("Sent message: " + message + remainder);
+        System.out.println("Enter the received message (binary): ");
+        String receivedMessage = scanner.nextLine();
+
+        if (checkCRC(receivedMessage, polynomial)) {
+            System.out.println("Received message is error-free.");
+        } else {
+            System.out.println("Error detected in the received message.");
+        }
+    }
+
+    // Perform CRC error detection
+    private static String performCRC(String message, String polynomial) {
+        int messageLength = message.length();
+        int polynomialLength = polynomial.length();
+
+        // Append zeros to the message to match the polynomial length
+        StringBuilder extendedMessage = new StringBuilder(message);
+        for (int i = 0; i < polynomialLength - 1; i++) {
+            extendedMessage.append("0");
+        }
+
+        // Convert strings to arrays of characters
+        char[] messageArray = extendedMessage.toString().toCharArray();
+        char[] polynomialArray = polynomial.toCharArray();
+
+        // Perform CRC division
+        for (int i = 0; i < messageLength; i++) {
+            if (messageArray[i] == '1') {
+                for (int j = 0; j < polynomialLength; j++) {
+                    messageArray[i + j] ^= polynomialArray[j];
+                }
+            }
+        }
+
+        // Extract the remainder
+        StringBuilder remainder = new StringBuilder();
+        for (int i = messageLength; i < messageArray.length; i++) {
+            remainder.append(messageArray[i]);
+        }
+
+        return remainder.toString();
+    }
+
+    // Check CRC for error detection
+    private static boolean checkCRC(String receivedMessage, String polynomial) {
+        String remainder = performCRC(receivedMessage, polynomial);
+        // Check if the remainder is all zeros
+        return remainder.equals("0000"); // Replace "0000" with the appropriate number of zeros based on the polynomial
+    }
+}
+
+
+-----
+
+User
+9. a) Write a program to implement distance vector routing algorithm and illustrate the path taken for
+
+ sending the packets from client to server.
+b) Write a socket program for simulation of CHAT server.
+
+
+
+import java.util.Scanner;
+
+public class DistanceVectorRouting {
+    private static final int INFINITY = 999;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input the number of nodes
+        System.out.print("Enter the number of nodes: ");
+        int numNodes = scanner.nextInt();
+
+        int[][] distanceMatrix = new int[numNodes][numNodes];
+        int[] distanceVector = new int[numNodes];
+
+        // Input the distance matrix
+        System.out.println("Enter the distance matrix (use " + INFINITY + " for infinity):");
+        for (int i = 0; i < numNodes; i++) {
+            for (int j = 0; j < numNodes; j++) {
+                distanceMatrix[i][j] = scanner.nextInt();
+            }
+        }
+
+        // Initialize distance vector
+        System.arraycopy(distanceMatrix[0], 0, distanceVector, 0, numNodes);
+
+        // Distance Vector Routing Algorithm
+        for (int k = 0; k < numNodes; k++) {
+            for (int i = 0; i < numNodes; i++) {
+                for (int j = 0; j < numNodes; j++) {
+                    if (distanceMatrix[i][k] + distanceMatrix[k][j] < distanceMatrix[i][j]) {
+                        distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j];
+                        distanceVector[i] = Math.min(distanceVector[i], distanceMatrix[i][j]);
+                    }
+                }
+            }
+        }
+
+        // Display the final distance matrix
+        System.out.println("Final Distance Matrix:");
+        for (int i = 0; i < numNodes; i++) {
+            for (int j = 0; j < numNodes; j++) {
+                System.out.print(distanceMatrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        // Display the final distance vector
+        System.out.println("Final Distance Vector:");
+        for (int i = 0; i < numNodes; i++) {
+            System.out.println("Distance to Node " + (i + 1) + ": " + distanceVector[i]);
+        }
+    }
+}
+
+
+
+---------
+
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
+
+public class ChatServer {
+    private static final int PORT = 12345;
+    private static final Set<PrintWriter> clientWriters = new HashSet<>();
+
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Chat Server is running on port " + PORT);
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Client connected: " + clientSocket);
+
+                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+                clientWriters.add(writer);
+
+                // Handle client communication in a separate thread
+                Thread clientThread = new Thread(() -> handleClient(clientSocket, writer));
+                clientThread.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void handleClient(Socket clientSocket, PrintWriter writer) {
+        try (
+            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
+        ) {
+            String clientName = reader.readLine();
+            broadcast(clientName + " has joined the chat.");
+
+            String clientMessage;
+            while ((clientMessage = reader.readLine()) != null) {
+                broadcast(clientName + ": " + clientMessage);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("Client disconnected: " + clientSocket);
+            clientWriters.remove(writer);
+            broadcast("A user has left the chat.");
+        }
+    }
+
+    private static void broadcast(String message) {
+        for (PrintWriter writer : clientWriters) {
+            writer.println(message);
+        }
+    }
+}
+
+
+----------
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+public class ChatClient {
+    private static final String SERVER_IP = "localhost";
+    private static final int SERVER_PORT = 12345;
+
+    public static void main(String[] args) {
+        try (
+            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            System.out.print("Enter your name: ");
+            String clientName = userInput.readLine();
+            out.println(clientName);
+
+            Thread receiveThread = new Thread(() -> {
+                try {
+                    String serverMessage;
+                    while ((serverMessage = in.readLine()) != null) {
+                        System.out.println(serverMessage);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            receiveThread.start();
+
+            String clientMessage;
+            while (true) {
+                clientMessage = userInput.readLine();
+                out.println(clientMessage);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
+---------------
+
+
+User
+11 Write a socket program for simulation of echo server. The client and server pair runs a simple TCP
+sockets program an echo server that allows one or more client to connect the server.
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class EchoServer {
+    public static void main(String[] args) {
+        final int PORT = 12345;
+
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Echo Server is running on port " + PORT);
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Client connected: " + clientSocket);
+
+                // Handle client communication in a separate thread
+                Thread clientThread = new Thread(() -> handleClient(clientSocket));
+                clientThread.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void handleClient(Socket clientSocket) {
+        try (
+            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)
+        ) {
+            String message;
+            while ((message = in.readLine()) != null) {
+                System.out.println("Received from client: " + message);
+                out.println("Server echoes: " + message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("Client disconnected: " + clientSocket);
+        }
+    }
+}
+
+
+---
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+public class EchoClient {
+    public static void main(String[] args) {
+        final String SERVER_IP = "localhost";
+        final int SERVER_PORT = 12345;
+
+        try (Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+             BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            System.out.println("Connected to the Echo Server");
+
+            String message;
+            while (true) {
+                System.out.print("Enter a message (or 'exit' to quit): ");
+                message = userInput.readLine();
+
+                if ("exit".equalsIgnoreCase(message)) {
+                    break;
+                }
+
+                out.println(message);
+
+                String response = in.readLine();
+                System.out.println("Server response: " + response);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+-------------
+
+User
+12 Write a program a client-server application for CHAT using TCP.
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashSet;
+import java.util.Set;
+
+public class ChatServer {
+    private static final int PORT = 12345;
+    private static Set<PrintWriter> clientWriters = new HashSet<>();
+
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Chat Server is running on port " + PORT);
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Client connected: " + clientSocket);
+
+                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+                clientWriters.add(writer);
+
+                // Handle client communication in a separate thread
+                Thread clientThread = new Thread(() -> handleClient(clientSocket, writer));
+                clientThread.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void handleClient(Socket clientSocket, PrintWriter writer) {
+        try (
+            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
+        ) {
+            String username = reader.readLine();
+            broadcast(username + " has joined the chat.");
+
+            String clientMessage;
+            while ((clientMessage = reader.readLine()) != null) {
+                broadcast(username + ": " + clientMessage);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("Client disconnected: " + clientSocket);
+            clientWriters.remove(writer);
+            broadcast("A user has left the chat.");
+        }
+    }
+
+    private static void broadcast(String message) {
+        for (PrintWriter writer : clientWriters) {
+            writer.println(message);
+        }
+    }
+}
+
+
+---
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+public class ChatClient {
+    private static final String SERVER_IP = "localhost";
+    private static final int SERVER_PORT = 12345;
+
+    public static void main(String[] args) {
+        try (
+            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+            BufferedReader serverReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            System.out.print("Enter your username: ");
+            String username = userInput.readLine();
+            out.println(username);
+
+            Thread receiveThread = new Thread(() -> {
+                try {
+                    String serverMessage;
+                    while ((serverMessage = serverReader.readLine()) != null) {
+                        System.out.println(serverMessage);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            receiveThread.start();
+
+            String clientMessage;
+            while ((clientMessage = userInput.readLine()) != null) {
+                out.println(clientMessage);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+-----------
+
+
+User
+13 Write a program to perform File Transfer in Client & Server Using TCP. The server sends a reply to the
+user with the files. The user specified files needs to be downloading.
+
+
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class FileTransferServer {
+    private static final int PORT = 12345;
+
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("File Transfer Server is running on port " + PORT);
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Client connected: " + clientSocket);
+
+                // Handle client communication in a separate thread
+                Thread clientThread = new Thread(() -> handleClient(clientSocket));
+                clientThread.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void handleClient(Socket clientSocket) {
+        try (
+            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())
+        ) {
+            // Receive requested file name from the client
+            String requestedFile = (String) in.readObject();
+            System.out.println("Client requested file: " + requestedFile);
+
+            // Send the file to the client
+            File fileToSend = new File(requestedFile);
+            if (fileToSend.exists()) {
+                out.writeObject(true); // Send confirmation to the client
+                sendFile(out, fileToSend);
+            } else {
+                out.writeObject(false); // Send failure message to the client
+                System.out.println("File not found: " + requestedFile);
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("Client disconnected: " + clientSocket);
+        }
+    }
+
+    private static void sendFile(ObjectOutputStream out, File file) throws IOException {
+        try (FileInputStream fileInput = new FileInputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while ((bytesRead = fileInput.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+        }
+    }
+}
+
+
+---
+
+import java.io.*;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class FileTransferClient {
+    private static final String SERVER_IP = "localhost";
+    private static final int SERVER_PORT = 12345;
+
+    public static void main(String[] args) {
+        try (
+            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream())
+        ) {
+            Scanner scanner = new Scanner(System.in);
+
+            System.out.print("Enter the file name to download: ");
+            String fileName = scanner.nextLine();
+
+            // Send the requested file name to the server
+            out.writeObject(fileName);
+
+            // Receive confirmation from the server
+            boolean fileExists = (boolean) in.readObject();
+
+            if (fileExists) {
+                System.out.println("File found on the server. Downloading...");
+
+                // Receive the file from the server
+                receiveFile(in, fileName);
+                System.out.println("File download complete.");
+            } else {
+                System.out.println("File not found on the server.");
+            }
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void receiveFile(ObjectInputStream in, String fileName) throws IOException {
+        try (FileOutputStream fileOutput = new FileOutputStream("downloaded_" + fileName)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while ((bytesRead = in.read(buffer)) != -1) {
+                fileOutput.write(buffer, 0, bytesRead);
+            }
+        }
+    }
+}
+
+
+----------
+
+User
+14 Write a program for Simulation of DNS using UDP sockets. The DNS have different domain with
+corresponding IP address. Identify the error message to the user when domain is not resolved.
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.util.HashMap;
+import java.util.Map;
+
+public class DNSServer {
+    private static final int PORT = 9876;
+    private static final Map<String, String> domainIPMap = new HashMap<>();
+
+    static {
+        // Predefined domain and IP mappings
+        domainIPMap.put("example.com", "192.168.1.1");
+        domainIPMap.put("google.com", "172.217.168.46");
+        domainIPMap.put("github.com", "140.82.113.4");
+    }
+
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket(PORT)) {
+            System.out.println("DNS Server is running on port " + PORT);
+
+            while (true) {
+                byte[] receiveData = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+                socket.receive(receivePacket);
+                String domain = new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+                String ipAddress = resolveDomain(domain);
+                byte[] sendData = ipAddress.getBytes();
+
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+                socket.send(sendPacket);
+
+                System.out.println("Resolved " + domain + " to IP: " + ipAddress);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String resolveDomain(String domain) {
+        return domainIPMap.getOrDefault(domain, "Domain not resolved");
+    }
+}
+
+
+---
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Scanner;
+
+public class DNSClient {
+    private static final int SERVER_PORT = 9876;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try (DatagramSocket socket = new DatagramSocket()) {
+            InetAddress serverAddress = InetAddress.getLocalHost(); // Replace with the actual server address
+
+            System.out.print("Enter the domain to resolve (e.g., example.com): ");
+            String domain = scanner.nextLine();
+
+            byte[] sendData = domain.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, SERVER_PORT);
+
+            socket.send(sendPacket);
+
+            byte[] receiveData = new byte[1024];
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+            socket.receive(receivePacket);
+            String ipAddress = new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+            if (!ipAddress.equals("Domain not resolved")) {
+                System.out.println("Resolved " + domain + " to IP: " + ipAddress);
+            } else {
+                System.out.println("Error: " + ipAddress);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+----------
+
+User
+18 Write a code simulating ARP protocols for client and server.
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+public class ARP_Server {
+    private static final int SERVER_PORT = 9876;
+
+    public static void main(String[] args) {
+        try (DatagramSocket socket = new DatagramSocket(SERVER_PORT)) {
+            System.out.println("ARP Server is running on port " + SERVER_PORT);
+
+            while (true) {
+                byte[] receiveData = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+                socket.receive(receivePacket);
+                String targetIP = new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+                String macAddress = getMACAddress(targetIP);
+                byte[] sendData = macAddress.getBytes();
+
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
+                socket.send(sendPacket);
+
+                System.out.println("ARP Reply: " + targetIP + " -> " + macAddress);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String getMACAddress(String ipAddress) {
+        // Simulate ARP resolution by returning a dummy MAC address
+        // In a real scenario, you would have a mapping of IP addresses to MAC addresses
+        return "00:1A:2B:3C:4D:5E";
+    }
+}
+
+
+---
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Scanner;
+
+public class ARP_Client {
+    private static final int SERVER_PORT = 9876;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        try (DatagramSocket socket = new DatagramSocket()) {
+            InetAddress serverAddress = InetAddress.getLocalHost(); // Replace with the actual server address
+
+            System.out.print("Enter the target IP address: ");
+            String targetIP = scanner.nextLine();
+
+            byte[] sendData = targetIP.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, SERVER_PORT);
+
+            socket.send(sendPacket);
+
+            byte[] receiveData = new byte[1024];
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+            socket.receive(receivePacket);
+            String macAddress = new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+            System.out.println("Received ARP Reply: " + targetIP + " -> " + macAddress);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+----
+
+User
+19 Implement and check the error detection/error correction techniques in networks and identify the errors.
+
+import java.util.Random;
+
+public class CRCSimulation {
+    private static final int MESSAGE_SIZE = 10;
+    private static final int POLYNOMIAL_SIZE = 4;
+
+    public static void main(String[] args) {
+        // Generate a random message
+        int[] message = generateRandomMessage();
+
+        // Simulate transmission with errors
+        int[] receivedMessage = simulateTransmissionWithErrors(message);
+
+        // Check for errors using CRC
+        boolean hasErrors = checkCRC(receivedMessage);
+
+        // Display results
+        System.out.println("Original Message: " + arrayToString(message));
+        System.out.println("Received Message: " + arrayToString(receivedMessage));
+
+        if (hasErrors) {
+            System.out.println("Errors detected using CRC.");
+        } else {
+            System.out.println("No errors detected using CRC.");
+        }
+    }
+
+    private static int[] generateRandomMessage() {
+        Random random = new Random();
+        int[] message = new int[MESSAGE_SIZE];
+
+        for (int i = 0; i < MESSAGE_SIZE; i++) {
+            message[i] = random.nextInt(2); // 0 or 1
+        }
+
+        return message;
+    }
+
+    private static int[] simulateTransmissionWithErrors(int[] message) {
+        Random random = new Random();
+        int[] receivedMessage = message.clone();
+
+        // Introduce errors randomly
+        for (int i = 0; i < MESSAGE_SIZE; i++) {
+            if (random.nextBoolean()) {
+                receivedMessage[i] = (receivedMessage[i] + 1) % 2; // Flip the bit
+            }
+        }
+
+        return receivedMessage;
+    }
+
+    private static boolean checkCRC(int[] receivedMessage) {
+        int[] polynomial = {1, 0, 1, 1}; // CRC polynomial: x^3 + x + 1
+
+        // Perform CRC error detection
+        for (int i = 0; i <= receivedMessage.length - POLYNOMIAL_SIZE; i++) {
+            if (receivedMessage[i] == 1) {
+                for (int j = 0; j < POLYNOMIAL_SIZE; j++) {
+                    receivedMessage[i + j] ^= polynomial[j];
+                }
+            }
+        }
+
+        // Check if any remainder is left
+        for (int i = receivedMessage.length - POLYNOMIAL_SIZE + 1; i < receivedMessage.length; i++) {
+            if (receivedMessage[i] == 1) {
+                return true; // Errors detected
+            }
+        }
+
+        return false; // No errors detected
+    }
+
+    private static String arrayToString(int[] array) {
+        StringBuilder result = new StringBuilder();
+        for (int value : array) {
+            result.append(value);
+        }
+        return result.toString();
+    }
+}
+
+--------
+
+a) Write the use of the following network configuration commands in respective environment - Unix /
+Windows i) tcpdump ii) netstat iii) ifconfig / ipconfig iv) nslookup v) traceroute
+b) Using Wireshark capture the FTP username and password.
+
+
+Unix/Linux:
+i) tcpdump
+
+bash
+
+# Capture and display packets on a network interface
+sudo tcpdump -i eth0
+
+# Capture packets to/from a specific IP address
+sudo tcpdump host 192.168.1.1
+
+# Capture packets on a specific port
+sudo tcpdump port 80
+
+# Save captured packets to a file
+sudo tcpdump -i eth0 -w capture.pcap
+
+ii) netstat
+
+bash
+
+# Display all active network connections and listening ports
+netstat -a
+
+# Display detailed information about active connections
+netstat -an
+
+# Display routing table
+netstat -r
+
+iii) ifconfig
+
+bash
+
+# Display information about all network interfaces
+ifconfig
+
+# Display detailed information about a specific interface (e.g., eth0)
+ifconfig eth0
+
+# Enable a network interface
+sudo ifconfig eth0 up
+
+# Disable a network interface
+sudo ifconfig eth0 down
+
+iv) nslookup
+
+bash
+
+# Perform DNS lookup for a domain (e.g., example.com)
+nslookup example.com
+
+# Perform reverse DNS lookup for an IP address (e.g., 8.8.8.8)
+nslookup 8.8.8.8
+
+v) traceroute
+
+bash
+
+# Trace the route packets take to a destination (e.g., example.com)
+traceroute example.com
+
+Windows:
+i) tcpdump (There's no native tcpdump on Windows. You might use WinDump or other alternatives.)
+
+cmd
+
+# Example with WinDump
+windump -i 1 -n -w capture.pcap
+
+ii) netstat
+
+cmd
+
+# Display all active network connections and listening ports
+netstat -a
+
+# Display detailed information about active connections
+netstat -an
+
+# Display routing table
+route print
+
+iii) ipconfig
+
+cmd
+
+# Display information about all network interfaces
+ipconfig
+
+# Display detailed information about a specific interface (e.g., Ethernet adapter)
+ipconfig /all
+
+# Release and renew IP address of a specific interface
+ipconfig /release
+ipconfig /renew
+
+iv) nslookup
+
+cmd
+
+# Perform DNS lookup for a domain (e.g., example.com)
+nslookup example.com
+
+# Perform reverse DNS lookup for an IP address (e.g., 8.8.8.8)
+nslookup 8.8.8.8
+
+v) tracert
+
+cmd
+
+# Trace the route packets take to a destination (e.g., example.com)
+tracert example.com
+
+b) Using Wireshark to Capture FTP Username and Password:
+
+    Open Wireshark and start capturing on the relevant network interface.
+
+    Use an FTP client to connect to an FTP server and log in with a username and password.
+
+    Stop the Wireshark capture.
+
+    Use a display filter to filter FTP traffic:
+
+    kotlin
+
+    ftp || ftp-data
+
+    Look for FTP commands such as USER and PASS in the captured packets. The corresponding values will be the username and password used for FTP login.
+
+Note: This exercise assumes that the FTP communication is not encrypted (FTP over TLS/SSL). If the FTP connection is encrypted, the username and password will not be easily visible in the captured packets. Always consider privacy and security implications when capturing and analyzing network traffic.
