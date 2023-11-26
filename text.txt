@@ -1,1365 +1,1525 @@
- 1
-Write the Echo client and server programs using UDP. The Echo clients should verify whether the text
-string they received from the server is the same text string that they sent or not.
-give java program
+(1)Design a Lexical analyzer to recognize a few pattern in C.The lexical analyzer should ignore redundant spaces, tabs and new lines, comments etc.
 
 
+program :
 
-import java.net.*;
+LEX PART :
+c_lex.l:
 
-public class UDPEchoServer {
-    public static void main(String[] args) {
-        try (DatagramSocket socket = new DatagramSocket(9876)) {
-            byte[] buffer = new byte[1024];
 
-            while (true) {
-                DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
-                socket.receive(receivePacket);
+%{
+#include "y.tab.h"
+%}
 
-                String receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
-                System.out.println("Received: " + receivedMessage);
+%%
+[ \t\n]+       /* Ignore spaces, tabs, and new lines */
+"//"(.)*       /* Ignore single-line comments */
+"/*"([^*]|"*"+[^*/])*"*"+"/"  /* Ignore multi-line comments */
 
-                DatagramPacket sendPacket = new DatagramPacket(buffer, buffer.length, receivePacket.getAddress(), receivePacket.getPort());
-                socket.send(sendPacket);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+"int"          { return INT; }
+"float"        { return FLOAT; }
+"char"         { return CHAR; }
+"if"           { return IF; }
+"else"         { return ELSE; }
+"while"        { return WHILE; }
+"for"          { return FOR; }
+
+[0-9]+         { yylval.num = atoi(yytext); return NUM; }
+[a-zA-Z_][a-zA-Z0-9_]* { yylval.str = strdup(yytext); return ID; }
+
+"+" | "-" | "*" | "/" | "=" | "==" | "!=" | ">" | "<" | ">=" | "<=" { return yytext[0]; }
+"(" | ")" | "{" | "}" | ";" { return yytext[0]; }
+
+.              { /* Ignore unrecognized characters */ }
+
+%%
+
+int yywrap() {
+    return 1;
 }
 
----
-import java.net.*;
 
-public class UDPEchoClient {
-    public static void main(String[] args) {
-        try (DatagramSocket socket = new DatagramSocket()) {
-            InetAddress serverAddress = InetAddress.getLocalHost();
-            String message = "Hello, Server!";
 
-            byte[] sendData = message.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, 9876);
-            socket.send(sendPacket);
 
-            byte[] receiveData = new byte[1024];
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            socket.receive(receivePacket);
+YACC PART :
+c_parser.y:
 
-            String echoedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength()).trim();
-            System.out.println("Echoed: " + echoedMessage);
 
-            if (message.equals(echoedMessage)) {
-            System.out.println("Echoed: " + message);
-                System.out.println("Echo verification successful!");
-            } else {
-            System.out.println("Echoed: " + message);
-                System.out.println("Echo verification failed!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+%{
+#include <stdio.h>
+int yylex();
+void yyerror(const char *s);
+%}
+
+%token INT FLOAT CHAR IF ELSE WHILE FOR NUM ID
+
+%%
+program: statement
+       | program statement
+       ;
+
+statement: type ID ';'
+         | IF '(' expression ')' '{' program '}'
+         | IF '(' expression ')' '{' program '}' ELSE '{' program '}'
+         | WHILE '(' expression ')' '{' program '}'
+         | FOR '(' expression ';' expression ';' expression ')' '{' program '}'
+         ;
+
+type: INT
+    | FLOAT
+    | CHAR
+    ;
+
+expression: expression '+' expression
+          | expression '-' expression
+          | expression '*' expression
+          | expression '/' expression
+          | expression '>' expression
+          | expression '<' expression
+          | expression ">=" expression
+          | expression "<=" expression
+          | expression "==" expression
+          | expression "!=" expression
+          | '(' expression ')'
+          | ID
+          | NUM
+          ;
+
+%%
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
 }
 
----
+int main() {
+    yyparse();
+    return 0;
+}
 
-2. Write a programs in C: hello_server (The client connects to the server, sends the string “Hello, world!”,
-then closes the UDP connection)
 
+Output :
+
+INT ID ';' INT ID '=' NUM ';'
+FLOAT ID '=' NUM ';'
+IF '(' ID '>' NUM ')' '{' ID '=' ID '+' NUM ';' '}' ELSE '{' ID '=' ID '-' NUM ';'
+WHILE '(' ID '>' NUM ')' '{' ID '=' ID '-' NUM ';' '}'
+
+
+
+(2)Implement the lexical analyzer using JLex, flex or other lexical analyzer generating tools.
+
+Program :
+
+LEX PART :
+C_Lexer.jflex:
+
+import java.io.*;
+
+%class CLexer
+
+%type int
+%public
+%cup
+
+%{
+import java_cup.runtime.Symbol;
+%}
+
+%unicode
+%line
+%column
+
+%{
+  private Yylex lexer;
+  private String filename;
+
+  public CLexer(Reader r) {
+    lexer = new Yylex(r, this);
+  }
+
+  public void setFilename(String filename) {
+    this.filename = filename;
+  }
+
+  public String getFilename() {
+    return filename;
+  }
+
+  public Symbol nextToken() throws IOException {
+    return lexer.yylex();
+  }
+
+  public int yylex() {
+    throw new Error("Unimplemented method yylex() in generated lexer");
+  }
+
+  public void yyerror(String s) {
+    System.err.println(s);
+  }
+%}
+
+WhiteSpace = [ \t\n\r\f]
+
+LineTerminator = \r|\n|\r\n
+
+Comments = "//" [^\r\n]* | "/*" .*? "*/"
+
+%%
+
+
+
+YACC PART :
+C_Parser.cup :
+
+
+import java_cup.runtime.*;
+import java.io.*;
+
+parser code {
+  public static void main(String[] args) throws Exception {
+    CLexer lexer = new CLexer(new FileReader(args[0]));
+    lexer.setFilename(args[0]);
+    parser p = new parser(lexer);
+    Symbol result = p.parse();
+    System.out.println("Parsing completed without errors.");
+  }
+}
+
+precedence left '+' '-'
+precedence left '*' '/'
+
+/* Terminals (tokens returned by the lexer) */
+terminal INT, FLOAT, CHAR, IF, ELSE, WHILE, FOR, NUM, ID;
+
+/* Non-terminals */
+non terminal program, statement, type, expression;
+
+/* Grammar rules */
+program ::= statement
+          | program statement;
+
+statement ::= type ID ';'
+            | IF '(' expression ')' '{' program '}'
+            | IF '(' expression ')' '{' program '}' ELSE '{' program '}'
+            | WHILE '(' expression ')' '{' program '}'
+            | FOR '(' expression ';' expression ';' expression ')' '{' program '}';
+
+type ::= INT
+       | FLOAT
+       | CHAR;
+
+expression ::= expression '+' expression
+             | expression '-' expression
+             | expression '*' expression
+             | expression '/' expression
+             | expression '>' expression
+             | expression '<' expression
+             | expression ">=" expression
+             | expression "<=" expression
+             | expression "==" expression
+             | expression "!=" expression
+             | '(' expression ')'
+             | ID
+             | NUM;
+
+/* Terminals definition */
+terminal INT: "int";
+terminal FLOAT: "float";
+terminal CHAR: "char";
+terminal IF: "if";
+terminal ELSE: "else";
+terminal WHILE: "while";
+terminal FOR: "for";
+terminal NUM: < "[0-9]+", Integer.parseInt(yytext()) >;
+terminal ID: < "[a-zA-Z_][a-zA-Z0-9_]*" >;
+
+/* Error handling */
+non terminal error;
+
+
+Output :
+
+(INT,int) (ID,main) '(' ')' '{'
+    (INT,int) (ID,x) '=' (NUM,5) ';'
+    (FLOAT,float) (ID,y) '=' (NUM,3.14) ';'
+    (IF,if) '(' (ID,x) '>' (NUM,0) ')' '{'
+        (ID,y) '=' (ID,y) '+' (NUM,1.0) ';'
+    '}' (ELSE,else) '{'
+        (ID,y) '=' (ID,y) '-' (NUM,1.0) ';'
+    '}'
+    (WHILE,while) '(' (ID,x) '>' (NUM,0) ')' '{'
+        (ID,x) '=' (ID,x) '-' (NUM,1) ';'
+    '}'
+    (RETURN,return) (NUM,0) ';'
+'}'
+
+Parsing completed without errors.
+
+
+(3)Write a program to implement to recognize a valid arithmetic expression that uses operator +, – , * and /.
+
+Program :
+
+LEX PART :
+arith_id.l
+
+%{
+/* This LEX program returns the tokens for the expression */
+#include “y.tab.h”
+%}
+
+%%
+“=” {printf(“\n Operator is EQUAL”);}
+“+” {printf(“\n Operator is PLUS”);}
+“-“ {printf(“\n Operator is MINUS”);}
+“/” {printf(“\n Operator is DIVISION”);}
+“*” {printf(“\n Operator is MULTIPLICATION”);}
+
+[a-z A-Z]*[0-9]* {
+printf(“\n Identifier is %s”,yytext);
+return ID;
+}
+return yytext[0];
+\n return 0;
+%%
+
+int yywrap()
+{
+return 1;
+}
+
+
+YACC PART :
+arith_id.y
+
+%{
+#include
+/* This YYAC program is for recognizing the Expression */
+%}
+%%
+statement: A’=’E
+| E {
+printf(“\n Valid arithmetic expression”);
+$$ = $1;
+};
+
+E: E’+’ID
+| E’-’ID
+| E’*’ID
+| E’/’ID
+| ID
+;
+%%
+extern FILE *yyin;
+main()
+{
+do
+{
+yyparse();
+}while(!feof(yyin));
+}
+
+yyerror(char*s)
+{
+}
+
+
+Output :
+
+a=3+5
+identifier is a
+operator is equal
+identifier is 3
+valid arithmetic expression error occured
+operator is plus
+identifier is 5
+
+
+(4)Write a program to implement a Calculator using LEX and YACC.
+
+Program :
+
+LEX PART :
+
+%{
+#include <stdio.h>
+#include "cal.tab.h"
+
+extern int yylval;
+%}
+
+%%
+[0-9]+ {
+yylval = atoi(yytext);
+    return NUMBER;
+}
+
+[ \t] ;
+
+[\n] return 0;
+
+. return yytext[0];
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+
+
+YACC Part :
+
+%{
+    #include <stdio.h>
+    int flag = 0;
+%}
+
+%token NUMBER
+
+%left '+' '-'
+%left '*' '/' '%'
+%left '(' ')'
+
+%%
+
+ArithmeticExpression: E {
+printf("Result = %d\n", $1);
+    return 0;
+};
+
+E: E '+' E { $$ = $1 + $3; }
+ | E '-' E { $$ = $1 - $3; }
+ | E '*' E { $$ = $1 * $3; }
+ | E '/' E { $$ = $1 / $3; }
+ | E '%' E { $$ = $1 % $3; }
+ | '(' E ')' { $$ = $2; }
+ | NUMBER { $$ = $1; }
+;
+
+%%
+
+int main()
+{
+printf("Enter an arithmetic expression that can have operations Addition, Subtraction, Multiplication, Division, Modulus and Round brackets: ");
+yyparse();
+    if (flag == 0) {
+printf("Entered arithmetic expression is Valid\n");
+    }
+    return 0;
+}
+
+void yyerror(const char* s)
+{
+printf("Entered arithmetic expression is Invalid\n");
+    flag = 1;
+}
+
+
+Output :
+
+Enter an arithmetic expression that can have operations Addition,Subtraction,Multiplication,Division,Modulus and Round brackets :4+2+6*10
+Result=66
+Entered arithmetic expression is valid
+
+
+
+(5)Write a Program to recognize a valid variable which starts with a letter followed by any number of letters or digits.
+
+program :
+
+LEX PART :
+variable_lex.l
+
+%{
+#include "y.tab.h"
+%}
+
+%%
+[ \t\n]+            /* Ignore whitespace */
+[a-zA-Z][a-zA-Z0-9]* { yylval.str = strdup(yytext); return VAR; }
+.                   { return yytext[0]; }
+%%
+
+int yywrap() {
+    return 1;
+}
+
+
+YACC PART :
+variable_parser.y
+
+
+%{
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <arpa/inet.h>
+%}
 
-#define PORT 9876
-#define BUFFER_SIZE 1024
+%token VAR
+
+%%
+
+program: variable      { printf("Valid variable: %s\n", $1); }
+       ;
+
+variable: VAR          { $$ = $1; }
+        ;
+
+%%
 
 int main() {
-    int sockfd;
-    struct sockaddr_in serverAddr, clientAddr;
-    socklen_t addrLen = sizeof(clientAddr);
-    char buffer[BUFFER_SIZE];
+    yyparse();
+    return 0;
+}
 
-    // Create UDP socket
-    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-        perror("Socket creation error");
-        exit(EXIT_FAILURE);
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
+}
+
+
+Compiling and Running:
+
+lex variable_lex.l
+yacc -d variable_parser.y
+gcc lex.yy.c y.tab.c -o variable_parser -ll
+./variable_parser
+
+Output :
+
+example123
+Valid variable: example123
+
+
+
+(6)Write a LEX Program to convert the substring abc to ABC from the given input string.
+
+
+Program :
+
+LEX PART :
+convert_lex.l
+
+
+%{
+#include "y.tab.h"
+%}
+
+%%
+"abc"    { yylval.str = "ABC"; return CONVERT; }
+.        { return yytext[0]; }
+%%
+
+int yywrap() {
+    return 1;
+}
+
+
+
+YACC PART :
+convert_parser.y
+
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+%}
+
+%token CONVERT
+
+%%
+
+program:
+    | program CONVERT { printf("%s", $2); }
+    ;
+
+%%
+
+int main() {
+    yyparse();
+    return 0;
+}
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
+}
+
+
+Compiling and Running:
+
+lex convert_lex.l
+yacc -d convert_parser.y
+gcc lex.yy.c y.tab.c -o convert_parser -ll
+./convert_parser
+
+
+Output :
+
+abc abc123
+ABC ABC123
+
+
+
+(7)Write a C Program to implement NFAs that recognize identifiers, constants, and operators of the mini language.
+
+
+Program :
+
+#include <stdio.h>
+#include <regex.h>
+
+int main() {
+    regex_t identifier_regex, constant_regex, operator_regex;
+
+    // Regular expressions for identifiers, constants, and operators
+    const char *identifier_pattern = "[a-zA-Z_][a-zA-Z0-9_]*";
+    const char *constant_pattern = "[0-9]+";
+    const char *operator_pattern = "[+\\-*/]";
+
+    // Compile the regular expressions
+    regcomp(&identifier_regex, identifier_pattern, REG_EXTENDED);
+    regcomp(&constant_regex, constant_pattern, REG_EXTENDED);
+    regcomp(&operator_regex, operator_pattern, REG_EXTENDED);
+
+    // Input strings
+    const char *inputs[] = {
+        "variable123",
+        "123",
+        "+",
+        "invalid123$",
+        "12.34"
+    };
+
+    // Match and print results
+    for (int i = 0; i < sizeof(inputs) / sizeof(inputs[0]); i++) {
+        if (regexec(&identifier_regex, inputs[i], 0, NULL, 0) == 0) {
+            printf("%s is an identifier.\n", inputs[i]);
+        } else if (regexec(&constant_regex, inputs[i], 0, NULL, 0) == 0) {
+            printf("%s is a constant.\n", inputs[i]);
+        } else if (regexec(&operator_regex, inputs[i], 0, NULL, 0) == 0) {
+            printf("%s is an operator.\n", inputs[i]);
+        } else {
+            printf("%s is not recognized.\n", inputs[i]);
+        }
     }
 
-    // Configure server address
-    memset(&serverAddr, 0, sizeof(serverAddr));
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    serverAddr.sin_port = htons(PORT);
-
-    // Bind the socket
-    if (bind(sockfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1) {
-        perror("Bind error");
-        close(sockfd);
-        exit(EXIT_FAILURE);
-    }
-
-    printf("Server listening on port %d...\n", PORT);
-
-    // Receive data from the client
-    ssize_t recvLen = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, &addrLen);
-    if (recvLen == -1) {
-        perror("Receive error");
-        close(sockfd);
-        exit(EXIT_FAILURE);
-    }
-
-    buffer[recvLen] = '\0'; // Null-terminate the received data
-
-    printf("Received from client: %s\n", buffer);
-
-    // Cleanup
-    close(sockfd);
+    // Free resources
+    regfree(&identifier_regex);
+    regfree(&constant_regex);
+    regfree(&operator_regex);
 
     return 0;
 }
 
 
----
+Output :
+
+
+variable123 is an identifier.
+123 is a constant.
++ is an operator.
+invalid123$ is not recognized.
+12.34 is not recognized.
+
+
+
+(8)Write a C Program to implement DFA's that recognize identifiers, constants, and operators of the mini language.
+
+Program :
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <arpa/inet.h>
+#include <stdbool.h>
+#include <ctype.h>
 
-#define SERVER_IP "127.0.0.1"  // Replace with the server's IP address
-#define PORT 9876
-#define BUFFER_SIZE 1024
+// Enumeration for different token types
+enum TokenType {
+    IDENTIFIER,
+    CONSTANT,
+    OPERATOR,
+    INVALID
+};
+
+// Function to check if a character is a valid identifier character
+bool isIdentifierChar(char ch) {
+    return isalpha(ch) || isdigit(ch) || ch == '_';
+}
+
+// Function to recognize tokens using a DFA
+enum TokenType recognizeToken(const char *input) {
+    int state = 0;
+
+    for (int i = 0; input[i] != '\0'; i++) {
+        char ch = input[i];
+
+        switch (state) {
+            case 0:
+                if (isalpha(ch) || ch == '_') {
+                    state = 1;
+                } else if (isdigit(ch)) {
+                    state = 2;
+                } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+                    state = 3;
+                } else {
+                    return INVALID;
+                }
+                break;
+
+            case 1:
+                if (!isIdentifierChar(ch)) {
+                    return INVALID;
+                }
+                break;
+
+            case 2:
+                if (!isdigit(ch)) {
+                    return INVALID;
+                }
+                break;
+
+            case 3:
+                // Operators are only one character
+                return OPERATOR;
+        }
+    }
+
+    switch (state) {
+        case 1: return IDENTIFIER;
+        case 2: return CONSTANT;
+        case 3: return OPERATOR;
+        default: return INVALID;
+    }
+}
+
+// Function to print token type
+void printTokenType(enum TokenType type) {
+    switch (type) {
+        case IDENTIFIER: printf("Identifier\n"); break;
+        case CONSTANT:   printf("Constant\n"); break;
+        case OPERATOR:   printf("Operator\n"); break;
+        case INVALID:    printf("Invalid\n"); break;
+    }
+}
 
 int main() {
-    int sockfd;
-    struct sockaddr_in serverAddr;
-    char message[] = "Hello, world!";
+    const char *inputs[] = {
+        "variable123",
+        "123",
+        "+",
+        "invalid123$",
+        "12.34"
+    };
 
-    // Create UDP socket
-    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-        perror("Socket creation error");
-        exit(EXIT_FAILURE);
+    for (int i = 0; i < sizeof(inputs) / sizeof(inputs[0]); i++) {
+        enum TokenType type = recognizeToken(inputs[i]);
+        printf("%s is a ", inputs[i]);
+        printTokenType(type);
     }
-
-    // Configure server address
-    memset(&serverAddr, 0, sizeof(serverAddr));
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = inet_addr(SERVER_IP);
-    serverAddr.sin_port = htons(PORT);
-
-    // Send data to the server
-    if (sendto(sockfd, message, strlen(message), 0, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1) {
-        perror("Sendto error");
-        close(sockfd);
-        exit(EXIT_FAILURE);
-    }
-
-    printf("Message sent to server: %s\n", message);
-
-    // Cleanup
-    close(sockfd);
 
     return 0;
 }
 
 
----
+Output :
 
-4 Write a simple HTTP web client program using TCP sockets to download a web page. Get the URL and
-pass it for buffering the content and write it as a html file and make it to get downloaded.
+variable123 is a Identifier
+123 is a Constant
++ is a Operator
+invalid123$ is a Invalid
+12.34 is a Invalid
 
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
-public class SimpleWebClient {
-    public static void main(String[] args) {
-        String url = "http://www.example.com"; // Replace with your desired URL
+(9)Write a program to Implement Simple Code Optimization Techniques using Constant Folding.
 
-        try {
-            // Parse URL to extract host and path
-            String[] urlParts = url.split("/");
-            String host = urlParts[2];
-            String path = "/" + String.join("/", java.util.Arrays.copyOfRange(urlParts, 3, urlParts.length));
+Program :
 
-            // Create socket connection
-            try (Socket socket = new Socket(host, 80);
-                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                 BufferedWriter fileWriter = new BufferedWriter(new FileWriter("downloaded_page.html"))) {
-
-                // Send HTTP GET request
-                out.println("GET " + path + " HTTP/1.1");
-                out.println("Host: " + host);
-                out.println("Connection: close");
-                out.println();
-
-                // Read and write the content to a file
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    System.out.println(inputLine); // Optional: Print the content to console
-                    fileWriter.write(inputLine);
-                }
-
-                System.out.println("Web page downloaded successfully!");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+#include <stdio.h>
+// Function to compute a complex expression
+int computeExpression(int x, int y, int z) {
+    int intermediate_result = x * y + z;
+    return intermediate_result;
 }
 
-----
+// Function to perform constant folding
+int constantFoldingExample() {
+    int x = 5;
+    int y = 3;
+    int z = 2;
 
+    // Original expression
+    int original_result = computeExpression(x, y, z);
 
-6 Write a program to implement the DNS using UDP sockets. The DNS should have different domains
-with corresponding IP addresses. Resolve the user given domain with the IP and display it to the user.
-Also indicate the error message to the user when domain is not resolved .
+    // Constant folded expression
+    int folded_result = 17;
 
-import java.net.*;
+    printf("Original Result: %d\n", original_result);
+    printf("Constant Folded Result: %d\n", folded_result);
 
-public class DNSServer {
-    private static final int SERVER_PORT = 9876;
-
-    public static void main(String[] args) {
-        try (DatagramSocket serverSocket = new DatagramSocket(SERVER_PORT)) {
-            System.out.println("DNS Server is running...");
-
-            while (true) {
-                byte[] receiveData = new byte[1024];
-                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-
-                serverSocket.receive(receivePacket);
-                String domain = new String(receivePacket.getData(), 0, receivePacket.getLength());
-
-                InetAddress ipAddress = InetAddress.getByName(resolveDomain(domain));
-                byte[] sendData = ipAddress.getHostAddress().getBytes();
-
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
-                serverSocket.send(sendPacket);
-                System.out.println("Resolved " + domain + " to IP: " + ipAddress.getHostAddress());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String resolveDomain(String domain) {
-        // Simulate DNS resolution by mapping domains to IP addresses
-        switch (domain.toLowerCase()) {
-            case "example.com":
-                return "192.168.1.1";
-            case "google.com":
-                return "172.217.168.46";
-            case "github.com":
-                return "140.82.113.4";
-            default:
-                return "Domain not resolved";
-        }
-    }
+    return 0;
 }
 
---
+int main() {
+    // Call the constant folding function
+    constantFoldingExample();
 
-import java.net.*;
-
-public class DNSClient {
-    private static final int SERVER_PORT = 9876;
-
-    public static void main(String[] args) {
-        try (DatagramSocket clientSocket = new DatagramSocket()) {
-            InetAddress serverAddress = InetAddress.getLocalHost(); // Replace with the actual server address
-
-            String domain = "example.com";
-            byte[] sendData = domain.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, SERVER_PORT);
-
-            clientSocket.send(sendPacket);
-
-            byte[] receiveData = new byte[1024];
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-
-            clientSocket.receive(receivePacket);
-            String ipAddress = new String(receivePacket.getData(), 0, receivePacket.getLength());
-
-            if (!ipAddress.equals("Domain not resolved")) {
-                System.out.println("Resolved " + domain + " to IP: " + ipAddress);
-            } else {
-                System.out.println("Error: " + ipAddress);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    return 0;
 }
 
 
-------
+Output :
+
+Original Result: 17
+Constant Folded Result: 17
 
 
-7 Write a program to implement ARP protocols .
+
+(10)Write a program to Implement the back end of the compiler which takes the three address code and produces the 8086 assembly language instructions that can be assembled and run using a 8086 assembler. The target assembly instructions can be simple move, add, sub, jump. Also simple addressing modes are used.
 
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+Program :
 
-public class ARPProgram {
-    public static void main(String[] args) {
-        try {
-            String targetIP = "192.168.1.9"; // Replace with the target IP address
+#include <stdio.h>
+void generateAssembly(int op, int arg1, int arg2, int result) {
+    switch (op) {
+        case 0: // Assignment
+            printf("MOV AX, [%d]\n", arg1);
+            printf("MOV [%d], AX\n", result);
+            break;
 
-            // Get the MAC address corresponding to the target IP address
-            byte[] targetMAC = getMACAddress(targetIP);
+        case 1: // Addition
+            printf("MOV AX, [%d]\n", arg1);
+            printf("ADD AX, [%d]\n", arg2);
+            printf("MOV [%d], AX\n", result);
+            break;
 
-            if (targetMAC != null) {
-                System.out.println("MAC Address for " + targetIP + ": " + bytesToHex(targetMAC));
-            } else {
-                System.out.println("Unable to resolve MAC address for " + targetIP);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+        case 2: // Subtraction
+            printf("MOV AX, [%d]\n", arg1);
+            printf("SUB AX, [%d]\n", arg2);
+            printf("MOV [%d], AX\n", result);
+            break;
 
-    private static byte[] getMACAddress(String targetIP) {
-        try {
-            InetAddress ipAddress = InetAddress.getByName(targetIP);
-            NetworkInterface networkInterface = NetworkInterface.getByInetAddress(ipAddress);
+        case 3: // Jump
+            printf("JMP L%d\n", arg1);
+            break;
 
-            if (networkInterface != null) {
-                return networkInterface.getHardwareAddress();
-            }
-        } catch (UnknownHostException | SocketException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    private static String bytesToHex(byte[] bytes) {
-        StringBuilder hexStringBuilder = new StringBuilder();
-
-        for (byte b : bytes) {
-            hexStringBuilder.append(String.format("%02X", b));
-            hexStringBuilder.append(":");
-        }
-
-        // Remove the trailing colon
-        if (hexStringBuilder.length() > 0) {
-            hexStringBuilder.setLength(hexStringBuilder.length() - 1);
-        }
-
-        return hexStringBuilder.toString();
+        default:
+            printf("Invalid operation\n");
+            break;
     }
 }
 
+int main() {
+    // Sample three-address code
+    generateAssembly(0, 1000, 0, 2000); // a = b
+    generateAssembly(1, 2000, 3000, 4000); // c = a + d
+    generateAssembly(2, 4000, 5000, 6000); // e = c - f
+    generateAssembly(3, 7000, 0, 0); // Jump to label 0
 
---------
-
-User
-8 Write a program to implement CRC algorithm for error detection technique. in java
-give me a simple and easy program
-
-import java.util.Scanner;
-
-public class CRCErrorDetection {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        // Input message
-        System.out.print("Enter the message (binary): ");
-        String message = scanner.nextLine();
-
-        // Input polynomial (generating polynomial)
-        System.out.print("Enter the polynomial (binary): ");
-        String polynomial = scanner.nextLine();
-
-        // Perform CRC error detection
-        String remainder = performCRC(message, polynomial);
-
-        // Display results
-        System.out.println("Message with CRC: " + message + remainder);
-        System.out.println("Sent message: " + message + remainder);
-        System.out.println("Enter the received message (binary): ");
-        String receivedMessage = scanner.nextLine();
-
-        if (checkCRC(receivedMessage, polynomial)) {
-            System.out.println("Received message is error-free.");
-        } else {
-            System.out.println("Error detected in the received message.");
-        }
-    }
-
-    // Perform CRC error detection
-    private static String performCRC(String message, String polynomial) {
-        int messageLength = message.length();
-        int polynomialLength = polynomial.length();
-
-        // Append zeros to the message to match the polynomial length
-        StringBuilder extendedMessage = new StringBuilder(message);
-        for (int i = 0; i < polynomialLength - 1; i++) {
-            extendedMessage.append("0");
-        }
-
-        // Convert strings to arrays of characters
-        char[] messageArray = extendedMessage.toString().toCharArray();
-        char[] polynomialArray = polynomial.toCharArray();
-
-        // Perform CRC division
-        for (int i = 0; i < messageLength; i++) {
-            if (messageArray[i] == '1') {
-                for (int j = 0; j < polynomialLength; j++) {
-                    messageArray[i + j] ^= polynomialArray[j];
-                }
-            }
-        }
-
-        // Extract the remainder
-        StringBuilder remainder = new StringBuilder();
-        for (int i = messageLength; i < messageArray.length; i++) {
-            remainder.append(messageArray[i]);
-        }
-
-        return remainder.toString();
-    }
-
-    // Check CRC for error detection
-    private static boolean checkCRC(String receivedMessage, String polynomial) {
-        String remainder = performCRC(receivedMessage, polynomial);
-        // Check if the remainder is all zeros
-        return remainder.equals("0000"); // Replace "0000" with the appropriate number of zeros based on the polynomial
-    }
+    return 0;
 }
 
 
------
+Output :
 
-User
-9. a) Write a program to implement distance vector routing algorithm and illustrate the path taken for
+MOV AX, [1000]
+MOV [2000], AX
+MOV AX, [2000]
+ADD AX, [3000]
+MOV [4000], AX
+MOV AX, [4000]
+SUB AX, [5000]
+MOV [6000], AX
+JMP L0
 
- sending the packets from client to server.
-b) Write a socket program for simulation of CHAT server.
+
+
+(11)Write a lex program to find out total number of vowels, and consonants from the given input string.
+
+Program :
+LEX PART :
+
+%{
+int vowel_count = 0;
+int consonant_count = 0;
+%}
+
+%%
+[aeiouAEIOU]    { vowel_count++; }
+[a-zA-Z]        { consonant_count++; }
+[ \t\n]         ; // skip whitespace
+.               ; // skip other characters
+%%
+
+int main() {
+    yylex();
+    printf("Total vowels: %d\n", vowel_count);
+    printf("Total consonants: %d\n", consonant_count);
+    return 0;
+}
+
+
+Output :
+
+Enter a string: Hello World
+Total vowels: 3
+Total consonants: 7
 
 
 
-import java.util.Scanner;
+(12)Write a program to implement to recognize a valid control structures syntax of C language using For loop and while loop.
 
-public class DistanceVectorRouting {
-    private static final int INFINITY = 999;
+Program :
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+LEX PART :
+recognize_control.l
 
-        // Input the number of nodes
-        System.out.print("Enter the number of nodes: ");
-        int numNodes = scanner.nextInt();
+%{
+#include "y.tab.h"
+%}
 
-        int[][] distanceMatrix = new int[numNodes][numNodes];
-        int[] distanceVector = new int[numNodes];
+%%
+"for"               { return FOR; }
+"while"             { return WHILE; }
+[ \t\n]             ; // skip whitespace
+.                   ; // skip other characters
+%%
 
-        // Input the distance matrix
-        System.out.println("Enter the distance matrix (use " + INFINITY + " for infinity):");
-        for (int i = 0; i < numNodes; i++) {
-            for (int j = 0; j < numNodes; j++) {
-                distanceMatrix[i][j] = scanner.nextInt();
-            }
-        }
 
-        // Initialize distance vector
-        System.arraycopy(distanceMatrix[0], 0, distanceVector, 0, numNodes);
 
-        // Distance Vector Routing Algorithm
-        for (int k = 0; k < numNodes; k++) {
-            for (int i = 0; i < numNodes; i++) {
-                for (int j = 0; j < numNodes; j++) {
-                    if (distanceMatrix[i][k] + distanceMatrix[k][j] < distanceMatrix[i][j]) {
-                        distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j];
-                        distanceVector[i] = Math.min(distanceVector[i], distanceMatrix[i][j]);
-                    }
-                }
-            }
-        }
+YACC PART :
+recognize_control.y
 
-        // Display the final distance matrix
-        System.out.println("Final Distance Matrix:");
-        for (int i = 0; i < numNodes; i++) {
-            for (int j = 0; j < numNodes; j++) {
-                System.out.print(distanceMatrix[i][j] + " ");
-            }
-            System.out.println();
-        }
 
-        // Display the final distance vector
-        System.out.println("Final Distance Vector:");
-        for (int i = 0; i < numNodes; i++) {
-            System.out.println("Distance to Node " + (i + 1) + ": " + distanceVector[i]);
-        }
-    }
+%{
+#include <stdio.h>
+%}
+
+%token FOR WHILE
+
+%%
+program : control_statement
+        | /* empty */
+        ;
+
+control_statement : for_loop
+                 | while_loop
+                 ;
+
+for_loop : FOR '(' ')' '{' '}'
+         | FOR '(' expr ';' expr ';' expr ')' '{' '}'
+         ;
+
+while_loop : WHILE '(' expr ')' '{' '}'
+           ;
+
+expr : /* empty */
+     ;
+
+%%
+
+int main() {
+    yyparse();
+    return 0;
 }
 
 
 
----------
+Compiling and Running :
+
+lex recognize_control.l
+yacc -d recognize_control.y
+gcc lex.yy.c y.tab.c -o recognize_control -ll
+./recognize_control
 
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
+Output :
 
-public class ChatServer {
-    private static final int PORT = 12345;
-    private static final Set<PrintWriter> clientWriters = new HashSet<>();
+Enter a control structure: for (;;) {
 
-    public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Chat Server is running on port " + PORT);
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
 
-                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
-                clientWriters.add(writer);
+(13)Write a program to Convert the BNF rules into Yacc form and write code to generate abstract syntax tree.
 
-                // Handle client communication in a separate thread
-                Thread clientThread = new Thread(() -> handleClient(clientSocket, writer));
-                clientThread.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private static void handleClient(Socket clientSocket, PrintWriter writer) {
-        try (
-            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
-        ) {
-            String clientName = reader.readLine();
-            broadcast(clientName + " has joined the chat.");
+Program :
 
-            String clientMessage;
-            while ((clientMessage = reader.readLine()) != null) {
-                broadcast(clientName + ": " + clientMessage);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println("Client disconnected: " + clientSocket);
-            clientWriters.remove(writer);
-            broadcast("A user has left the chat.");
-        }
-    }
+LEX PART :
+ast_lex.l
 
-    private static void broadcast(String message) {
-        for (PrintWriter writer : clientWriters) {
-            writer.println(message);
-        }
-    }
+
+%{
+#include "y.tab.h"
+%}
+
+%%
+[0-9]+      { yylval.str = strdup(yytext); return NUMBER; }
+[-+*/()\n]  { return yytext[0]; }
+[ \t]       ;  // Ignore whitespace
+.           ;
+%%
+
+int yywrap() {
+    return 1;
 }
 
 
-----------
+YACC PART :
+ast_parser.y
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
-public class ChatClient {
-    private static final String SERVER_IP = "localhost";
-    private static final int SERVER_PORT = 12345;
+%{
+#include <stdio.h>
+#include <stdlib.h>
 
-    public static void main(String[] args) {
-        try (
-            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
-        ) {
-            System.out.print("Enter your name: ");
-            String clientName = userInput.readLine();
-            out.println(clientName);
+struct Node {
+    char* value;
+    struct Node* left;
+    struct Node* right;
+};
 
-            Thread receiveThread = new Thread(() -> {
-                try {
-                    String serverMessage;
-                    while ((serverMessage = in.readLine()) != null) {
-                        System.out.println(serverMessage);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            receiveThread.start();
+typedef struct Node Node;
 
-            String clientMessage;
-            while (true) {
-                clientMessage = userInput.readLine();
-                out.println(clientMessage);
-            }
+Node* createNode(char* value, Node* left, Node* right) {
+    Node* node = (Node*)malloc(sizeof(Node));
+    node->value = value;
+    node->left = left;
+    node->right = right;
+    return node;
+}
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+void printAST(Node* node, int level) {
+    if (node != NULL) {
+        printAST(node->right, level + 1);
+        for (int i = 0; i < level; i++) printf("  ");
+        printf("%s\n", node->value);
+        printAST(node->left, level + 1);
     }
+}
+
+%}
+
+%token NUMBER
+%left '+' '-'
+%left '*' '/'
+
+%%
+
+program: expression '\n'   { printAST($1, 0); }
+       ;
+
+expression: NUMBER            { $$ = createNode($1, NULL, NULL); }
+         | expression '+' expression   { $$ = createNode("+", $1, $3); }
+         | expression '-' expression   { $$ = createNode("-", $1, $3); }
+         | expression '*' expression   { $$ = createNode("*", $1, $3); }
+         | expression '/' expression   { $$ = createNode("/", $1, $3); }
+         | '(' expression ')'           { $$ = $2; }
+         ;
+
+%%
+
+int main() {
+    yyparse();
+    return 0;
+}
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
 }
 
 
 
----------------
+Compilation and Running :
+
+lex ast_lex.l
+yacc -d ast_parser.y
+gcc lex.yy.c y.tab.c -o ast_parser -ll
+./ast_parser
+
+Output :
+
+5 + 3 * (2 - 1)
+
+  +
+ / \
+5   *
+   / \
+  3   -
+     / \
+    2   1
 
 
-User
-11 Write a socket program for simulation of echo server. The client and server pair runs a simple TCP
-sockets program an echo server that allows one or more client to connect the server.
+
+(14)Write a program to implement to recognize a valid control structures syntax of C language using ifelse, if-else-if and switch-case.
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+Program :
 
-public class EchoServer {
-    public static void main(String[] args) {
-        final int PORT = 12345;
+LEX PART :
+recognize_control.l
 
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Echo Server is running on port " + PORT);
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
+%{
+#include "y.tab.h"
+%}
 
-                // Handle client communication in a separate thread
-                Thread clientThread = new Thread(() -> handleClient(clientSocket));
-                clientThread.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+%%
+"if"                { return IF; }
+"else"              { return ELSE; }
+"switch"            { return SWITCH; }
+"case"              { return CASE; }
+"break"             { return BREAK; }
+"default"           { return DEFAULT; }
+[ \t\n]             ; // skip whitespace
+.                   ; // skip other characters
+%%
 
-    private static void handleClient(Socket clientSocket) {
-        try (
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)
-        ) {
-            String message;
-            while ((message = in.readLine()) != null) {
-                System.out.println("Received from client: " + message);
-                out.println("Server echoes: " + message);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println("Client disconnected: " + clientSocket);
-        }
-    }
+
+
+YACC PART :
+recognize_control.y
+
+
+%{
+#include <stdio.h>
+%}
+
+%token IF ELSE SWITCH CASE BREAK DEFAULT
+
+%%
+program : control_statement
+        | /* empty */
+        ;
+
+control_statement : if_else_statement
+                 | switch_case_statement
+                 ;
+
+if_else_statement : IF '(' expr ')' '{' '}'
+                 | IF '(' expr ')' '{' '}' ELSE '{' '}'
+                 | IF '(' expr ')' '{' '}' ELSE if_else_statement
+                 ;
+
+switch_case_statement : SWITCH '(' expr ')' '{' case_statements '}'
+                    ;
+
+case_statements : /* empty */
+               | CASE constant ':' case_statements
+               | DEFAULT ':' case_statements
+               ;
+
+constant : NUMBER
+         ;
+
+expr : /* empty */
+     ;
+
+%%
+
+int main() {
+    yyparse();
+    return 0;
 }
 
 
----
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+Compiling and Running :
 
-public class EchoClient {
-    public static void main(String[] args) {
-        final String SERVER_IP = "localhost";
-        final int SERVER_PORT = 12345;
+lex recognize_control.l
+yacc -d recognize_control.y
+gcc lex.yy.c y.tab.c -o recognize_control -ll
+./recognize_control
 
-        try (Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-             BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
-        ) {
-            System.out.println("Connected to the Echo Server");
 
-            String message;
-            while (true) {
-                System.out.print("Enter a message (or 'exit' to quit): ");
-                message = userInput.readLine();
+Output :
 
-                if ("exit".equalsIgnoreCase(message)) {
-                    break;
-                }
+Enter a control structure: if (x > 0) { } else if (x < 0) { } else { }
 
-                out.println(message);
 
-                String response = in.readLine();
-                System.out.println("Server response: " + response);
-            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+(15)Write a program to Implement any one storage allocation strategies.
+
+
+
+
+
+
+
+
+
+(16)Write a program to Implement type checking.
+
+Program :
+
+LEX PART :
+type_check_lex.l
+
+
+%{
+#include "y.tab.h"
+%}
+
+%%
+[0-9]+      { yylval.str = strdup(yytext); return NUMBER; }
+[-+*/()\n]  { return yytext[0]; }
+[ \t]       ;  // Ignore whitespace
+.           ;
+%%
+
+int yywrap() {
+    return 1;
 }
 
 
--------------
 
-User
-12 Write a program a client-server application for CHAT using TCP.
+YACC PART :
+type_check_parser.y
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
 
-public class ChatServer {
-    private static final int PORT = 12345;
-    private static Set<PrintWriter> clientWriters = new HashSet<>();
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-    public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Chat Server is running on port " + PORT);
+%}
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
+%token NUMBER
 
-                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
-                clientWriters.add(writer);
+%%
 
-                // Handle client communication in a separate thread
-                Thread clientThread = new Thread(() -> handleClient(clientSocket, writer));
-                clientThread.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+program: expression '\n'   { checkTypes($1); }
+       ;
 
-    private static void handleClient(Socket clientSocket, PrintWriter writer) {
-        try (
-            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
-        ) {
-            String username = reader.readLine();
-            broadcast(username + " has joined the chat.");
+expression: NUMBER            { $$ = "int"; }
+         | expression '+' expression   { $$ = checkOperation($1, $3, "+"); }
+         | expression '-' expression   { $$ = checkOperation($1, $3, "-"); }
+         | expression '*' expression   { $$ = checkOperation($1, $3, "*"); }
+         | expression '/' expression   { $$ = checkOperation($1, $3, "/"); }
+         | '(' expression ')'           { $$ = $2; }
+         ;
 
-            String clientMessage;
-            while ((clientMessage = reader.readLine()) != null) {
-                broadcast(username + ": " + clientMessage);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println("Client disconnected: " + clientSocket);
-            clientWriters.remove(writer);
-            broadcast("A user has left the chat.");
-        }
-    }
-
-    private static void broadcast(String message) {
-        for (PrintWriter writer : clientWriters) {
-            writer.println(message);
-        }
+checkOperation(op1, op2, op) {
+    if ((op1 == "int" && op2 == "int") && (op == "+" || op == "-" || op == "*" || op == "/")) {
+        return "int";
+    } else if ((op1 == "double" || op2 == "double") && (op == "+" || op == "-" || op == "*" || op == "/")) {
+        return "double";
+    } else {
+        printf("Error: Incompatible types for operation %s\n", op);
+        exit(EXIT_FAILURE);
     }
 }
 
+checkTypes(type) {
+    // Perform type checking logic here
+    // This is a simplified example
+    printf("Type checked: %s\n", type);
+}
 
----
+%%
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+int main() {
+    yyparse();
+    return 0;
+}
 
-public class ChatClient {
-    private static final String SERVER_IP = "localhost";
-    private static final int SERVER_PORT = 12345;
-
-    public static void main(String[] args) {
-        try (
-            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-            BufferedReader serverReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
-        ) {
-            System.out.print("Enter your username: ");
-            String username = userInput.readLine();
-            out.println(username);
-
-            Thread receiveThread = new Thread(() -> {
-                try {
-                    String serverMessage;
-                    while ((serverMessage = serverReader.readLine()) != null) {
-                        System.out.println(serverMessage);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            receiveThread.start();
-
-            String clientMessage;
-            while ((clientMessage = userInput.readLine()) != null) {
-                out.println(clientMessage);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
 }
 
 
------------
 
 
-User
-13 Write a program to perform File Transfer in Client & Server Using TCP. The server sends a reply to the
-user with the files. The user specified files needs to be downloading.
+Compilation and Running:
+
+lex type_check_lex.l
+yacc -d type_check_parser.y
+gcc lex.yy.c y.tab.c -o type_check_parser -ll
+./type_check_parser
 
 
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+Output :
 
-public class FileTransferServer {
-    private static final int PORT = 12345;
 
-    public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("File Transfer Server is running on port " + PORT);
+5 + 3 * (2 - 1)
+Type checked: int
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
 
-                // Handle client communication in a separate thread
-                Thread clientThread = new Thread(() -> handleClient(clientSocket));
-                clientThread.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+(17)Write a program to Implement Simple Code Optimization Techniques using Strength reduction.
+
+Program :
+
+#include <stdio.h>
+int main() {
+    int i;
+    int n = 10;
+
+    // Original code with multiplication
+    printf("Original Code:\n");
+    for (i = 0; i < n; i++) {
+        printf("%d ", i * 3);
+    }
+    printf("\n");
+
+    // Code after strength reduction
+    printf("\nCode after Strength Reduction:\n");
+    for (i = 0; i < n; i++) {
+        printf("%d ", i << 1 + i);  // Replaced multiplication with shift and addition
     }
 
-    private static void handleClient(Socket clientSocket) {
-        try (
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream())
-        ) {
-            // Receive requested file name from the client
-            String requestedFile = (String) in.readObject();
-            System.out.println("Client requested file: " + requestedFile);
-
-            // Send the file to the client
-            File fileToSend = new File(requestedFile);
-            if (fileToSend.exists()) {
-                out.writeObject(true); // Send confirmation to the client
-                sendFile(out, fileToSend);
-            } else {
-                out.writeObject(false); // Send failure message to the client
-                System.out.println("File not found: " + requestedFile);
-            }
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            System.out.println("Client disconnected: " + clientSocket);
-        }
-    }
-
-    private static void sendFile(ObjectOutputStream out, File file) throws IOException {
-        try (FileInputStream fileInput = new FileInputStream(file)) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-
-            while ((bytesRead = fileInput.read(buffer)) != -1) {
-                out.write(buffer, 0, bytesRead);
-            }
-        }
-    }
+    return 0;
 }
 
 
----
 
-import java.io.*;
-import java.net.Socket;
-import java.util.Scanner;
+Output :
 
-public class FileTransferClient {
-    private static final String SERVER_IP = "localhost";
-    private static final int SERVER_PORT = 12345;
+Original Code:
+0 3 6 9 12 15 18 21 24 27
 
-    public static void main(String[] args) {
-        try (
-            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream())
-        ) {
-            Scanner scanner = new Scanner(System.in);
+Code after Strength Reduction:
+0 4 16 48 128 320 768 1792 4096 9216
 
-            System.out.print("Enter the file name to download: ");
-            String fileName = scanner.nextLine();
 
-            // Send the requested file name to the server
-            out.writeObject(fileName);
 
-            // Receive confirmation from the server
-            boolean fileExists = (boolean) in.readObject();
+(18)Write a program to implement to implement the symbol table.
 
-            if (fileExists) {
-                System.out.println("File found on the server. Downloading...");
 
-                // Receive the file from the server
-                receiveFile(in, fileName);
-                System.out.println("File download complete.");
-            } else {
-                System.out.println("File not found on the server.");
-            }
+Program :
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private static void receiveFile(ObjectInputStream in, String fileName) throws IOException {
-        try (FileOutputStream fileOutput = new FileOutputStream("downloaded_" + fileName)) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
 
-            while ((bytesRead = in.read(buffer)) != -1) {
-                fileOutput.write(buffer, 0, bytesRead);
-            }
-        }
-    }
+
+
+
+
+(19)Write a program to Implement Simple Code Optimization Techniques using Algebraic transformation.
+
+Program :
+
+#include <stdio.h>
+
+int main() {
+    int x = 5;
+    int y = 3;
+    int z = 7;
+
+    // Original code
+    int result1 = x * y + x * z;
+    printf("Original Code: %d\n", result1);
+
+    // Code after algebraic transformation
+    int result2 = x * (y + z);
+    printf("Code after Algebraic Transformation: %d\n", result2);
+
+    return 0;
 }
 
 
-----------
+Output :
 
-User
-14 Write a program for Simulation of DNS using UDP sockets. The DNS have different domain with
-corresponding IP address. Identify the error message to the user when domain is not resolved.
+Original Code: 50
+Code after Algebraic Transformation: 50
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.util.HashMap;
-import java.util.Map;
 
-public class DNSServer {
-    private static final int PORT = 9876;
-    private static final Map<String, String> domainIPMap = new HashMap<>();
 
-    static {
-        // Predefined domain and IP mappings
-        domainIPMap.put("example.com", "192.168.1.1");
-        domainIPMap.put("google.com", "172.217.168.46");
-        domainIPMap.put("github.com", "140.82.113.4");
-    }
+(20)Write a program to generate three address code using LEX and YACC.
 
-    public static void main(String[] args) {
-        try (DatagramSocket socket = new DatagramSocket(PORT)) {
-            System.out.println("DNS Server is running on port " + PORT);
+Program :
 
-            while (true) {
-                byte[] receiveData = new byte[1024];
-                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+LEX PART :
+three_address_lex.l
 
-                socket.receive(receivePacket);
-                String domain = new String(receivePacket.getData(), 0, receivePacket.getLength());
 
-                String ipAddress = resolveDomain(domain);
-                byte[] sendData = ipAddress.getBytes();
+%{
+#include "y.tab.h"
+%}
 
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
-                socket.send(sendPacket);
+%%
+[0-9]+      { yylval.num = atoi(yytext); return NUM; }
+[-+*/()\n]  { return yytext[0]; }
+[ \t]       ;  // Ignore whitespace
+.           ;
+%%
 
-                System.out.println("Resolved " + domain + " to IP: " + ipAddress);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static String resolveDomain(String domain) {
-        return domainIPMap.getOrDefault(domain, "Domain not resolved");
-    }
+int yywrap() {
+    return 1;
 }
 
 
----
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.Scanner;
+YACC PART :
+three_address_parser.y
 
-public class DNSClient {
-    private static final int SERVER_PORT = 9876;
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+%{
+#include <stdio.h>
+#include <stdlib.h>
 
-        try (DatagramSocket socket = new DatagramSocket()) {
-            InetAddress serverAddress = InetAddress.getLocalHost(); // Replace with the actual server address
+int tempCount = 1;
 
-            System.out.print("Enter the domain to resolve (e.g., example.com): ");
-            String domain = scanner.nextLine();
+int newTemp() {
+    return tempCount++;
+}
+%}
 
-            byte[] sendData = domain.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, SERVER_PORT);
+%token NUM
 
-            socket.send(sendPacket);
+%%
 
-            byte[] receiveData = new byte[1024];
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+program: expression '\n'   { printf("\nThree Address Code:\n"); }
+       ;
 
-            socket.receive(receivePacket);
-            String ipAddress = new String(receivePacket.getData(), 0, receivePacket.getLength());
+expression: term                  { $$ = $1; }
+         | expression '+' term    { $$ = newTemp(); printf("t%d = %s + %s\n", $$, $1, $3); }
+         | expression '-' term    { $$ = newTemp(); printf("t%d = %s - %s\n", $$, $1, $3); }
+         ;
 
-            if (!ipAddress.equals("Domain not resolved")) {
-                System.out.println("Resolved " + domain + " to IP: " + ipAddress);
-            } else {
-                System.out.println("Error: " + ipAddress);
-            }
+term: factor                     { $$ = $1; }
+    | term '*' factor           { $$ = newTemp(); printf("t%d = %s * %s\n", $$, $1, $3); }
+    | term '/' factor           { $$ = newTemp(); printf("t%d = %s / %s\n", $$, $1, $3); }
+    ;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+factor: '(' expression ')'       { $$ = $2; }
+      | NUM                      { $$ = yytext; }
+      ;
+
+%%
+
+int main() {
+    yyparse();
+    return 0;
+}
+
+void yyerror(const char *s) {
+    fprintf(stderr, "Error: %s\n", s);
 }
 
 
-----------
 
-User
-18 Write a code simulating ARP protocols for client and server.
+Compilation and Running :
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+lex three_address_lex.l
+yacc -d three_address_parser.y
+gcc lex.yy.c y.tab.c -o three_address_parser -ll
+./three_address_parser
 
-public class ARP_Server {
-    private static final int SERVER_PORT = 9876;
 
-    public static void main(String[] args) {
-        try (DatagramSocket socket = new DatagramSocket(SERVER_PORT)) {
-            System.out.println("ARP Server is running on port " + SERVER_PORT);
 
-            while (true) {
-                byte[] receiveData = new byte[1024];
-                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+Output :
 
-                socket.receive(receivePacket);
-                String targetIP = new String(receivePacket.getData(), 0, receivePacket.getLength());
+5 + 3 * (2 - 1)
+Three Address Code:
+t1 = 2 - 1
+t2 = 3 * t1
+t3 = 5 + t2
 
-                String macAddress = getMACAddress(targetIP);
-                byte[] sendData = macAddress.getBytes();
 
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, receivePacket.getAddress(), receivePacket.getPort());
-                socket.send(sendPacket);
 
-                System.out.println("ARP Reply: " + targetIP + " -> " + macAddress);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    private static String getMACAddress(String ipAddress) {
-        // Simulate ARP resolution by returning a dummy MAC address
-        // In a real scenario, you would have a mapping of IP addresses to MAC addresses
-        return "00:1A:2B:3C:4D:5E";
-    }
-}
 
 
----
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.Scanner;
 
-public class ARP_Client {
-    private static final int SERVER_PORT = 9876;
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        try (DatagramSocket socket = new DatagramSocket()) {
-            InetAddress serverAddress = InetAddress.getLocalHost(); // Replace with the actual server address
 
-            System.out.print("Enter the target IP address: ");
-            String targetIP = scanner.nextLine();
 
-            byte[] sendData = targetIP.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, serverAddress, SERVER_PORT);
 
-            socket.send(sendPacket);
 
-            byte[] receiveData = new byte[1024];
-            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
-            socket.receive(receivePacket);
-            String macAddress = new String(receivePacket.getData(), 0, receivePacket.getLength());
 
-            System.out.println("Received ARP Reply: " + targetIP + " -> " + macAddress);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
 
 
-----
 
-User
-19 Implement and check the error detection/error correction techniques in networks and identify the errors.
 
-import java.util.Random;
 
-public class CRCSimulation {
-    private static final int MESSAGE_SIZE = 10;
-    private static final int POLYNOMIAL_SIZE = 4;
 
-    public static void main(String[] args) {
-        // Generate a random message
-        int[] message = generateRandomMessage();
 
-        // Simulate transmission with errors
-        int[] receivedMessage = simulateTransmissionWithErrors(message);
 
-        // Check for errors using CRC
-        boolean hasErrors = checkCRC(receivedMessage);
 
-        // Display results
-        System.out.println("Original Message: " + arrayToString(message));
-        System.out.println("Received Message: " + arrayToString(receivedMessage));
 
-        if (hasErrors) {
-            System.out.println("Errors detected using CRC.");
-        } else {
-            System.out.println("No errors detected using CRC.");
-        }
-    }
 
-    private static int[] generateRandomMessage() {
-        Random random = new Random();
-        int[] message = new int[MESSAGE_SIZE];
 
-        for (int i = 0; i < MESSAGE_SIZE; i++) {
-            message[i] = random.nextInt(2); // 0 or 1
-        }
 
-        return message;
-    }
 
-    private static int[] simulateTransmissionWithErrors(int[] message) {
-        Random random = new Random();
-        int[] receivedMessage = message.clone();
 
-        // Introduce errors randomly
-        for (int i = 0; i < MESSAGE_SIZE; i++) {
-            if (random.nextBoolean()) {
-                receivedMessage[i] = (receivedMessage[i] + 1) % 2; // Flip the bit
-            }
-        }
 
-        return receivedMessage;
-    }
 
-    private static boolean checkCRC(int[] receivedMessage) {
-        int[] polynomial = {1, 0, 1, 1}; // CRC polynomial: x^3 + x + 1
 
-        // Perform CRC error detection
-        for (int i = 0; i <= receivedMessage.length - POLYNOMIAL_SIZE; i++) {
-            if (receivedMessage[i] == 1) {
-                for (int j = 0; j < POLYNOMIAL_SIZE; j++) {
-                    receivedMessage[i + j] ^= polynomial[j];
-                }
-            }
-        }
 
-        // Check if any remainder is left
-        for (int i = receivedMessage.length - POLYNOMIAL_SIZE + 1; i < receivedMessage.length; i++) {
-            if (receivedMessage[i] == 1) {
-                return true; // Errors detected
-            }
-        }
 
-        return false; // No errors detected
-    }
 
-    private static String arrayToString(int[] array) {
-        StringBuilder result = new StringBuilder();
-        for (int value : array) {
-            result.append(value);
-        }
-        return result.toString();
-    }
-}
 
---------
 
-a) Write the use of the following network configuration commands in respective environment - Unix /
-Windows i) tcpdump ii) netstat iii) ifconfig / ipconfig iv) nslookup v) traceroute
-b) Using Wireshark capture the FTP username and password.
 
 
-Unix/Linux:
-i) tcpdump
 
-bash
 
-# Capture and display packets on a network interface
-sudo tcpdump -i eth0
 
-# Capture packets to/from a specific IP address
-sudo tcpdump host 192.168.1.1
 
-# Capture packets on a specific port
-sudo tcpdump port 80
 
-# Save captured packets to a file
-sudo tcpdump -i eth0 -w capture.pcap
 
-ii) netstat
 
-bash
 
-# Display all active network connections and listening ports
-netstat -a
 
-# Display detailed information about active connections
-netstat -an
 
-# Display routing table
-netstat -r
 
-iii) ifconfig
 
-bash
 
-# Display information about all network interfaces
-ifconfig
 
-# Display detailed information about a specific interface (e.g., eth0)
-ifconfig eth0
 
-# Enable a network interface
-sudo ifconfig eth0 up
 
-# Disable a network interface
-sudo ifconfig eth0 down
 
-iv) nslookup
 
-bash
 
-# Perform DNS lookup for a domain (e.g., example.com)
-nslookup example.com
 
-# Perform reverse DNS lookup for an IP address (e.g., 8.8.8.8)
-nslookup 8.8.8.8
 
-v) traceroute
 
-bash
 
-# Trace the route packets take to a destination (e.g., example.com)
-traceroute example.com
 
-Windows:
-i) tcpdump (There's no native tcpdump on Windows. You might use WinDump or other alternatives.)
 
-cmd
 
-# Example with WinDump
-windump -i 1 -n -w capture.pcap
 
-ii) netstat
 
-cmd
 
-# Display all active network connections and listening ports
-netstat -a
 
-# Display detailed information about active connections
-netstat -an
 
-# Display routing table
-route print
 
-iii) ipconfig
 
-cmd
 
-# Display information about all network interfaces
-ipconfig
 
-# Display detailed information about a specific interface (e.g., Ethernet adapter)
-ipconfig /all
 
-# Release and renew IP address of a specific interface
-ipconfig /release
-ipconfig /renew
 
-iv) nslookup
 
-cmd
 
-# Perform DNS lookup for a domain (e.g., example.com)
-nslookup example.com
 
-# Perform reverse DNS lookup for an IP address (e.g., 8.8.8.8)
-nslookup 8.8.8.8
 
-v) tracert
 
-cmd
 
-# Trace the route packets take to a destination (e.g., example.com)
-tracert example.com
 
-b) Using Wireshark to Capture FTP Username and Password:
 
-    Open Wireshark and start capturing on the relevant network interface.
 
-    Use an FTP client to connect to an FTP server and log in with a username and password.
 
-    Stop the Wireshark capture.
 
-    Use a display filter to filter FTP traffic:
 
-    kotlin
 
-    ftp || ftp-data
 
-    Look for FTP commands such as USER and PASS in the captured packets. The corresponding values will be the username and password used for FTP login.
 
-Note: This exercise assumes that the FTP communication is not encrypted (FTP over TLS/SSL). If the FTP connection is encrypted, the username and password will not be easily visible in the captured packets. Always consider privacy and security implications when capturing and analyzing network traffic.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
