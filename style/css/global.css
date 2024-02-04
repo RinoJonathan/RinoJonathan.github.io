@@ -1018,8 +1018,16 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: url("../img/exp/exp_javascript.svg");
 }
 
+.experience__icon--react {
+  background-image: url("../img/exp/exp_react.svg");
+}
+
 .experience__icon--node {
   background-image: url("../img/exp/exp_node-js.svg");
+}
+
+.experience__icon--mongodb {
+  background-image: url("../img/exp/exp_mongodb.webp");
 }
 
 .experience__icon--bash {
