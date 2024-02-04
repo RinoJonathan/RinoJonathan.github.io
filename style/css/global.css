@@ -1018,8 +1018,16 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   background-image: url("../img/exp/exp_javascript.svg");
 }
 
+.experience__icon--react {
+  background-image: url("../img/exp/exp_react.svg");
+}
+
 .experience__icon--node {
   background-image: url("../img/exp/exp_node-js.svg");
+}
+
+.experience__icon--mongodb {
+  background-image: url("../img/exp/exp_mongodb.webp");
 }
 
 .experience__icon--bash {
@@ -1393,6 +1401,16 @@ p, h1, h2, h3, h4, h5, h6, ul, li {
   float: left;
   width: 100%;
   border: 0;
+}
+
+.alt_rslides img {
+  display: block;
+  min-height: 27em;
+  max-height: 27em;
+  float: left;
+  width: 100%;
+  border: 0;
+  object-fit: contain
 }
 
 .rslides_tabs {
@@ -2965,4 +2983,12 @@ a {
   display: block;
   clear:both;
   color: white;
+}
+
+
+.external_show{
+  width: 100%;
+  min-height: 38em;
+  max-height: 38em;
+
 }
