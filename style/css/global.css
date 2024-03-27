@@ -3001,14 +3001,6 @@ a {
   padding: 2em 0em 1em 0em;
 }
 
-
-/* .feature-unit p{
-  width: 100%;
-  color: white;
-  font-size: 1.3em;
-  padding: 2em 0em 1em 0em;
-} */
-
 .feature-unit ul {
   padding-left: 2em;
   list-style: none;
@@ -3058,4 +3050,8 @@ a {
   /* text-align: center; */
   font-family: 'Courier New', Courier, monospace;
   margin: 1em;
+}
+
+.code-area p{
+  width: 80%;
 }
