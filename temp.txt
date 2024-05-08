@@ -579,3 +579,8 @@ function closeNavbar() {
     document.getElementById("sideNavigationBar")
         .style.width = "0%";
 }
+
+
+==========
+
+elearn: https://trainingpreview.safetyculture.com/p/fTGg8AJQMkziqlXeYMTExaRR
