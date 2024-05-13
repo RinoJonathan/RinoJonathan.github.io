@@ -1,586 +1,512 @@
-<!DOCTYPE html>
-<html lang="en">
+I 8051
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content=
-        "width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.css">
-    <title>Landing Page</title>
-</head>
+1. 8051 Assembly Language program
 
-<body>
-    <nav>
-        <div class="heading">Landing Page</div>
-        <span class="sideMenuButton" 
-            onclick="openNavbar()">
-            &#9776
-        </span>
+ORG 0000H
+CLR C
+MOV A, #20H
+ADD A, #21H
+MOV R0, A
+END
 
-        <div class="navbar">
-            <ul>
-                <li><a href="#Home">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Sign Up</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <!-- Side navigation bar for 
-        responsive website -->
-    <div class="sideNavigationBar" 
-        id="sideNavigationBar">
-        <a href="#" class="closeButton" 
-            onclick="closeNavbar()">
-            &#x274C
-        </a>
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Sign Up</a>
-    </div>
+2. Test data transfer between registers and memory
+a
+ORG 0000H
+CLR C
+MOV R0, #55H
+MOV R1, #6FH
+MOV A, R0
+MOV 30H, A
+MOV A, R1
+MOV 31H, A
+END
 
-    <!-- Content -->
-    <div class="line" id="Home">
-        <div class="side1">
-            <h1>GeeksforGeeks</h1>
-            <button>
-                <a href=
-"https://www.geeksforgeeks.org/">
-                    Explore More
-                </a>
-            </button>
-        </div>
-        <div class="side2">
-            <img src=
-"https://media.geeksforgeeks.org/wp-content/cdn-uploads/20220401124017/HTML-Tutorial.png"
-                width="500">
-        </div>
-    </div>
+b
+ORG 0000H
+CLR C
+MOV R0, #30H
+MOV R1, #40H
+MOV R7, #06H
+BACK: MOV A, @R0
+MOV @R1, A
+INC R0
+INC R1
+DJNZ R7, BACK
+END
 
-    <section class="about" id="My Projects">
-        <div class="content">
-            <div class="title">
-                <span>Courses</span>
-            </div>
-            <div class="boxes">
-                <div class="box">
-                    <div class="topic">
-                        <a href="" target="_blank">
-                            DSA
-                        </a>
-                    </div>
-                    <p>
-                        The term DSA stands for Data 
-                        Structures and Algorithms. As 
-                        the name itself suggests, it 
-                        is a combination of two 
-                        separate yet interrelated 
-                        topics.
-                    </p>
-                </div>
-                <div class="box">
+3. ALU operations
 
-                    <div class="topic">
-                        <a href="" target="_blank">
-                            HTML
-                        </a>
-                    </div>
-                    <p>
-                        HTML stands for HyperText 
-                        Markup Language. It is used 
-                        to design web pages using 
-                        the markup language.
-                    </p>
-                </div>
+ORG 0000H
+CLR C
+//ADDITION
+MOV A, #20H
+ADD A, #21H
+MOV 41H, A
+//SUBTRACTION
+MOV A, #20H
+SUBB A, #18H
+MOV 42H, A
+//MULTIPLICATION
+MOV A, #03H
+MOV B, #04H
+MUL AB
+MOV 43H, A
+//DIVISION
+MOV A, #95H
+MOV B, #10H
+DIV AB
+MOV 44H, A
+MOV 45H, B
+//AND
+MOV A, #25H
+MOV B, #12H
+ANL A, B
+MOV 46H, A
+//OR
+MOV A, #25H
+MOV B, #15H
+ORL A, B
+MOV 47H, A
+//XOR
+MOV A, #45H
+MOV B, #67H
+XRL A, B
+MOV 48H, A
+//NOT
+MOV A, #45H
+CPL A
+MOV 49H, A
+END
 
-                <div class="box">
-                    <div class="topic">
-                        <a href="" target="_blank">
-                            Javascript
-                        </a>
-                    </div>
-                    <p>
-                        JavaScript (JS) is the most 
-                        popular lightweight, interpreted 
-                        compiled programming language.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="contact" id="contact">
-        <div class="content">
-            <div class="title"><span>Sign Up</span></div>
-            <div class="contactMenu">
-                <div class="input1">
-                    <div class="label1">Your Name</div>
-                    <div class="input2">
-                        <input type="text" 
-                            placeholder="Enter your Name here">
-                    </div>
-                    <div class="label1">
-                        <label>Your Email</label>
-                    </div>
-                    <div class="input2">
-                        <input type="text" 
-                            placeholder="Enter your Email here">
-                    </div>
-                    <div class="label1">
-                        <label>Your Password</label>
-                    </div>
-                    <div class="input2">
-                        <input type="text" 
-                            placeholder="Enter your Password here">
-                    </div>
-                    <div class="button">
-                        <button>Sign Up</button>
-                    </div>
-                </div>
-                <div class="input3">
-                    <div class="rightside1">
-                        <div class="title1">
-                            <span>
-                                Contact Us
-                            </span>
-                        </div>
-                        <div class="content1">
-                            A-143, 9th Floor, Sovereign 
-                            Corporate Tower, Sector-136, 
-                            Noida, Uttar Pradesh - 201305
-                        </div>
-                        <div class="title1">
-                            <span>More Information</span>
-                        </div>
-                        <div class="content1">
-                            Greetings to all the Geeks out there!
-                            We welcome you to the platform where we
-                            consistently strive to offer the best 
-                            of education. This platform has been 
-                            designed for every geek wishing to 
-                            expand their knowledge, share their 
-                            knowledge and is ready to grab their 
-                            dream job. We have millions of articles,
-                            live as well as online courses, thousands 
-                            of tutorials and much more just for the 
-                            geek inside you.Thank you for choosing 
-                            and supporting us!
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Footer section -->
-    <footer>
-        <div class="footer">
-            <span>
-                Created By
-                <a href="https://www.geeksforgeeks.org/" 
-                    target="_blank">
-                    GeeksforGeeks
-                </a>
-            </span>
-        </div>
-    </footer>
-    <script src="index.js"></script>
-</body>
+4.WRITE BASIC PROGRAMS USING EMBEDDED C
 
-</html>
+
+ORG 0x0000 ; Start address
+main:
+MOV P1, #0xFF ; Enable all pins of Port 1
+ACALL DELAY
+ ; Delay for demonstration purposes
+MOV P1, #0x00 ; Disable all pins of Port 1
+ACALL DELAY
+ ; Delay for demonstration purposes
+SJMP main
+ ; Infinite loop
+DELAY:
+; Insert your delay subroutine here
+; For example, a simple delay loop
+MOV R2, #0xFF ; Initialize delay counter
+delay_loop:
+DJNZ R2, delay_loop ; Decrement counter and loop until
+zero
+RET
+ ; Return from delay subroutine
+END
+ ; End of program
 
 
 
-====
 
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+5. INTRODUCTION TO ARDUINO PROGRAMMING
+
+a. DIGITAL WRITE:
+
+void setup() {
+pinMode(2, OUTPUT);
+}
+void loop() {
+digitalWrite(2, HIGH);
+delay(1000);
+digitalWrite(2, LOW);
+delay(1000);
 }
 
-body {
-    background-color: white;
-    color: black;
-    font-family: "Fira Sans", sans-serif;
-    background-color: white;
+b. DIGITAL READ:
+void setup() {
+pinMode(2, OUTPUT);
+pinMode(5, INPUT_PULLUP);
 }
-
-nav {
-    width: 100%;
-    height: 80px;
-    display: flex;
-    justify-content: space-between;
-    padding: 20px 5%;
-    background-color: #8cc099;
+void loop() {
+int sw=digitalRead(5);
+if(sw==1)
+{
+for(int i=0; i<5; i++)
+{
+digitalWrite(2, HIGH);
+delay(1000);
+digitalWrite(2, LOW);
+delay(1000);
 }
-
-nav .heading {
-    font-size: 30px;
-    font-weight: 700;
-    color: white;
 }
-
-nav ul {
-    display: flex;
-    list-style: none;
+else
+{
+digitalWrite(2, LOW);
 }
-
-nav ul li {
-    padding: 8px 15px;
-    border-radius: 10px;
-    transition: 0.2s ease-in;
-}
-
-nav ul li a {
-    color: black;
-    font-size: 20px;
-    font-weight: 500;
-    text-decoration: none;
-    color: white;
-}
-
-nav ul li:hover {
-    background-color: green;
-}
-
-nav ul li a:hover {
-    color: white;
-}
-
-nav .sideMenuButton {
-    font-size: 30px;
-    font-weight: bolder;
-    cursor: pointer;
-    display: none;
-}
-
-/* responsive navbar css */
-@media screen and (max-width: 600px) {
-    nav .sideMenuButton {
-        display: flex;
-    }
-
-    nav .navbar {
-        display: none;
-    }
-
-    .sideNavigationBar {
-        display: block !important;
-    }
-}
-
-.sideNavigationBar {
-    height: 100%;
-    position: fixed;
-    top: 0;
-    right: 0%;
-    background-color: green;
-    overflow-x: hidden;
-    transition: 0.3s ease-in;
-    padding-top: 60px;
-    display: none;
-}
-
-.sideNavigationBar a {
-    padding: 8px 8px 8px 40px;
-    display: block;
-    font-size: 25px;
-    font-weight: 500;
-    color: #d1d1d1;
-    transition: 0.3s;
-    text-decoration: none;
-}
-
-.sideNavigationBar a button {
-    padding: 10px 20px;
-    border-radius: 10px;
-    color: green;
-    font-size: 16px;
-    border-style: none;
-    font-weight: 700;
-}
-
-.sideNavigationBar a:hover {
-    color: white;
-}
-
-.sideNavigationBar .closeButton {
-    position: absolute;
-    top: 10px;
-    right: 25px;
-    font-size: 20px;
-    margin-left: 50px;
-}
-
-.line {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 2% 5%;
-}
-
-.line .side1 {
-    padding-right: 50px;
-}
-
-.side1 h1 {
-    font-size: 60px;
-    margin-bottom: 10px;
-    color: green;
-}
-
-.side1 button {
-    width: 200px;
-    padding: 12px 20px;
-    border-radius: 20px;
-    border-style: none;
-    color: black;
-    font-size: 17px;
-    font-weight: 600;
-}
-
-a {
-    text-decoration: none;
-    color: black;
-}
-
-/* Header content responsive */
-@media screen and (max-width: 980px) {
-    .side2 img {
-        width: 350px;
-    }
-
-    .side1 h1 {
-        font-size: 40px;
-    }
-
-    .side1 p {
-        font-size: 17px;
-    }
-
-    .line {
-        margin-top: 80px;
-    }
-}
-
-@media screen and (max-width: 600px) {
-    .side1 h1 {
-        font-size: 35px;
-    }
-
-    .line {
-        flex-direction: column;
-    }
-
-    .line .side1 {
-        padding: 30px;
-    }
-}
-
-/* section */
-
-section .topic a {
-    font-size: 25px;
-    font-weight: 500;
-    margin-bottom: 10px;
-}
-
-.about .boxes {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.about .boxes .box {
-    margin: 10px 20px;
-    max-width: calc(100% / 3 - 50px);
-    text-align: center;
-    border-radius: 12px;
-    padding: 30px 10px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.12);
-    cursor: default;
-}
-
-/* Contact Page  */
-
-.contact {
-    padding: 20px;
-}
-
-.contact .content {
-    margin: 0 auto;
-    padding: 30px 0;
-}
-
-.content .title {
-    width: 80%;
-    text-align: center;
-    font-weight: bolder;
-    font-size: 40px;
-}
-
-.title {
-    margin-bottom: 30px;
-    margin-left: 80px;
-}
-
-.contactMenu {
-    display: flex;
-    justify-content: space-evenly;
-}
-
-.input2 {
-    margin-top: 10;
-}
-
-.label1 {
-    font-size: 18px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-    font-weight: bolder;
-}
-
-.contactMenu .input1 input {
-    border-radius: 13px;
-    padding: 6px;
-}
-
-.input2 input {
-    border-color: rgb(252, 244, 244);
-    width: 400px;
-}
-
-.button {
-    margin-top: 12px;
-    margin-left: 5px;
-}
-
-.button button {
-    width: 162px;
-    height: 35px;
-    border-radius: 12px;
-    border-color: transparent;
-}
-
-.button button:hover {
-    background-color: #8cc099;
-}
-
-button {
-    width: 162px;
-    height: 35px;
-    border-radius: 12px;
-    border-color: transparent;
-}
-
-button:hover {
-    background-color: #8cc099;
-}
-
-.rightside1 {
-    display: flex;
-    flex-direction: column;
-    margin-left: 300px;
-}
-
-.title1 {
-    font-size: 18px;
-    margin-top: 8px;
-    margin-bottom: 5px;
-    font-weight: bolder;
-}
-
-.content1 {
-    width: 450px;
-    margin-top: 2px;
-    color: grey;
-}
-
-/* Footer */
-footer {
-    background: var(--primary-color);
-    padding: 15px 0;
-    text-align: center;
-    font-family: "Poppins", sans-serif;
-}
-
-footer .footer span {
-    font-size: 17px;
-    font-weight: 400;
-    color: var(--white-color);
-}
-
-footer .footer span a {
-    font-weight: 500;
-    color: var(--white-color);
-}
-
-footer .footer span a:hover {
-    text-decoration: underline;
-}
-
-@media screen and (max-width: 1060px) {
-    .contactMenu {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .rightside1 {
-        display: flex;
-        flex-direction: column;
-        margin-left: 0px;
-    }
-
-    .content1 {
-        width: 100%;
-        margin-top: 2px;
-        color: grey;
-    }
-
-    .side2 img {
-        width: 95%;
-        height: 90%;
-    }
-}
-
-@media screen and (max-width: 600px) {
-    .side2 img {
-        width: 100%;
-    }
-
-    section .topic a {
-        font-size: 20px;
-    }
-
-    section .topic p {
-        font-size: 5px;
-    }
-
-    .about .boxes {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .about .boxes .box {
-        max-width: 70%;
-    }
 }
 
 
-=====
-
-function openNavbar() {
-    document.getElementById("sideNavigationBar")
-        .style.width = "50%";
+c. ANALOG READ:
+void setup() {
+pinMode(2, OUTPUT);
+Serial.begin(9600);
 }
-function closeNavbar() {
-    document.getElementById("sideNavigationBar")
-        .style.width = "0%";
+void loop() {
+int joystick=analogRead(A0);
+Serial.println(joystick);
+if(joystick>800)
+digitalWrite(2, HIGH);
+else
+digitalWrite(2, LOW);
+delay(500);
+}
+
+d. ANALOG WRITE:
+void setup() {
+pinMode(3, OUTPUT);
+}
+void loop() {
+for(int i=0; i<256;i++) {
+analogWrite(3,i);
+delay(20);
+}
+for(int i=255; i>=0;i--) {
+analogWrite(3,i);
+delay(20);
+}
 }
 
 
-==========
+e. SERIAL COMMUNICATION:
+void setup() {
+Serial.begin(9600);
+pinMode(4, OUTPUT);
+}
+void loop() {
+if(Serial.available()>0)
+{
+char data=Serial.read();
+Serial.println(data);
+if(data=='1'){
+digitalWrite(4,HIGH);
+}
+else if(data=='2'){
+digitalWrite(4,LOW);
+}
+}
+}
 
-elearn: https://trainingpreview.safetyculture.com/p/fTGg8AJQMkziqlXeYMTExaRR
+
+
+
+6. bluetooth
+
+a.
+
+#include<SoftwareSerial.h>
+SoftwareSerial mySerial(2,3); //rx,tx
+void setup() {
+mySerial.begin(9600);
+Serial.begin(9600);
+pinMode(4, OUTPUT);
+}
+void loop() {
+if(mySerial.available()>0)
+{
+char data=mySerial.read();
+Serial.println(data);
+if(data=='1'){
+digitalWrite(4,HIGH);
+Serial.println("LED ON");
+}
+else if(data=='2'){
+digitalWrite(4,LOW);
+Serial.println("LED OFF");
+}
+}
+}
+
+
+b.
+
+#include<SoftwareSerial.h>
+SoftwareSerial mySerial(2,3); //rx,tx
+void setup() {
+mySerial.begin(9600);
+Serial.begin(9600);
+pinMode(4, OUTPUT);
+}
+void loop() {
+if(mySerial.available()>0)
+{
+char data=mySerial.read();
+Serial.println(data);
+if(data=='1'){
+digitalWrite(4,HIGH);
+Serial.println("LED ON");
+}
+else if(data=='2'){
+digitalWrite(4,LOW);
+Serial.println("LED OFF");
+}
+}
+}
+
+
+7. micropython
+
+a LED:
+from machine import Pin
+import time
+LED = Pin(16, Pin.OUT)
+while True:
+    LED.value(1)
+    time.sleep(1)
+    LED.value(0)
+    time.sleep(1)
+
+
+b RGB:
+from machine import Pin
+from time import sleep_ms,sleep
+r=Pin(16,Pin.OUT)
+y=Pin(17,Pin.OUT)
+g=Pin(18,Pin.OUT)
+while True:
+    r.value(1)
+    sleep_ms(1000)
+    r.value(0)
+    sleep_ms(1000)
+    y.value(1)
+    sleep(1)
+    y.value(0)
+    sleep(1)
+    g.value(1)
+    sleep(1)
+    g.value(0)
+    sleep(1)
+
+
+c SWITCH CONTROLLED LED:
+from machine import Pin
+from time import sleep
+led=Pin(16,Pin.OUT)
+sw=Pin(15,Pin.IN)
+while True:
+    bt=sw.value()
+    if bt== True:
+        print("LED ON")
+        led.value(1)
+        sleep(2)
+        led.value (0)
+        sleep(2)
+        led.value (1)
+        sleep(2)
+        led.value(0)
+        sleep(2)
+    else:
+        print("LED OFF")
+    sleep(0.5)
+
+
+8 interface between
+
+a IR Sensor:
+from machine import Pin
+from time import sleep
+buzzer=Pin(16,Pin.OUT)
+ir=Pin(15,Pin.IN)
+while True:
+    ir_value=ir.value()
+    if ir_value== True:
+        print("Buzzer OFF")
+        buzzer.value(0)
+    else:
+        print("Buzzer ON")
+        buzzer.value (1)
+    sleep(0.5)
+
+
+b ULTRASONIC SENSOR:
+from machine import Pin, PWM
+import utime
+trigger = Pin(14, Pin.OUT)
+echo = Pin(15, Pin.IN)
+buzzer = Pin(16, Pin.OUT)
+def measure_distance():
+    trigger.low()
+    utime.sleep_us(2)
+    trigger.high()
+    utime.sleep_us(5)
+    trigger.low()
+    while echo.value() == 0:
+        signaloff = utime.ticks_us()
+    while echo.value() == 1:
+        signalon = utime.ticks_us()
+    timepassed = signalon - signaloff
+    distance = (timepassed * 0.0343) / 2
+    return distance
+
+while True:
+    dist = measure_distance()
+    print(f"Distance : {dist} cm")
+    if dist <= 10:
+        buzzer.value(1)
+        utime.sleep(0.01)
+    else:
+        buzzer.value(0)
+        utime.sleep(0.01)
+    utime.sleep(0.5)
+
+
+9 COMMUNICATE BETWEEN ARDUINO AND RASPBERRY PI
+
+MASTER
+ARDUINO:
+#include<SoftwareSerial.h>
+SoftwareSerial mySerial(2,3); //rx,tx
+void setup() {
+mySerial.begin(9600);
+}
+void loop() {
+mySerial.write('A');
+delay(1000);
+mySerial.write('B');
+delay(1000);
+}
+
+
+SLAVE
+RASPBERRY PI PICO
+from machine import Pin, UART
+uart = UART(0, 9600)
+led = Pin(16, Pin.OUT)
+while True:
+if uart.any() > 0:
+data = uart.read()
+print(data)
+if "A" in data:
+led.value(1)
+print('LED on \n')
+uart.write('LED on \n')
+elif "B" in data:
+led.value(0)
+print('LED off \n')
+uart.write('LED off \n')
+
+
+10. iot based blynk system
+
+#define BLYNK_TEMPLATE_ID
+"***********"#define BLYNK_DEVICE_NAME
+"Home Automation"#define
+BLYNK_AUTH_TOKEN
+"********************"// Comment this out to
+disable prints and save space#define
+BLYNK_PRINT Serial#include <WiFi.h>#include
+<WiFiClient.h>#include
+<BlynkSimpleEsp32.h>char auth[] =
+BLYNK_AUTH_TOKEN;// Your WiFi
+credentials.// Set password to "" for open
+networks.char ssid[] = "Wokwi-GUEST";char
+pass[] = "";BlynkTimer timer;#define button1_pin
+26#define button2_pin 25#define button3_pin
+33#define button4_pin 32#define relay1_pin
+13#define relay2_pin 12#define relay3_pin
+14#define relay4_pin 27int relay1_state = 0;int
+relay2_state = 0;int relay3_state = 0;int relay4_state
+= 0;//Change the virtual pins according the
+rooms#define button1_vpin V1#define
+button2_vpin V2#define button3_vpin V3
+#define button4_vpin
+V4//---------------------------------------------------------
+---------------------// This function is called every
+time the device is connected to the Blynk.Cloud//
+Request the latest state from the
+serverBLYNK_CONNECTED() {
+Blynk.syncVirtual(button1_vpin);
+Blynk.syncVirtual(button2_vpin);
+Blynk.syncVirtual(button3_vpin);
+Blynk.syncVirtual(button4_vpin);}//------------------
+--------------------------------------------------------//
+This function is called every time the Virtual Pin
+state change//i.e when web push switch from Blynk
+App or Web
+DashboardBLYNK_WRITE(button1_vpin) {
+relay1_state = param.asInt();
+digitalWrite(relay1_pin,
+relay1_state);}//-------------------------------------------
+-------------------------------BLYNK_WRITE(button2
+_vpin) { relay2_state = param.asInt();
+digitalWrite(relay2_pin, relay2_state);}
+BLYNK_WRITE(button3_vpin) { relay3_state =
+param.asInt(); digitalWrite(relay3_pin,
+relay3_state);}//-----------------------
+--------BLYNK_WRITE(button4_vpin) {
+relay4_state = param.asInt();
+digitalWrite(relay4_pin,
+relay4_state);}//-----------------------
+void
+setup(){ // Debug console Serial.begin(115200);
+//-----------------------------------------
+--------------------------- pinMode(button1_pin,
+INPUT_PULLUP); pinMode(button2_pin,
+INPUT_PULLUP); pinMode(button3_pin,
+INPUT_PULLUP); pinMode(button4_pin,
+INPUT_PULLUP);
+//-----------------------------------------
+--------------------------- pinMode(relay1_pin,
+OUTPUT); pinMode(relay2_pin, OUTPUT);
+pinMode(relay3_pin, OUTPUT);
+pinMode(relay4_pin, OUTPUT);
+//-----------------------------------------
+--------------------------- //During Starting all Relays
+should TURN OFF digitalWrite(relay1_pin, HIGH);
+digitalWrite(relay2_pin, HIGH);
+digitalWrite(relay3_pin, HIGH);
+digitalWrite(relay4_pin, HIGH);
+//-----------------------------------------
+--------------------------- Blynk.begin(auth, ssid,
+pass); // You can also specify server:
+//Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
+//Blynk.begin(auth, ssid, pass,
+IPAddress(192,168,1,100), 8080);
+//-----------------------------------------
+//Blynk.virtualWrite(button1_vpin, relay1_state);
+//Blynk.virtualWrite(button2_vpin, relay2_state);
+//Blynk.virtualWrite(button3_vpin, relay3_state);
+//Blynk.virtualWrite(button4_vpin, relay4_state);
+//-----------------------------------------
+---------------------------}void loop(){ Blynk.run();
+timer.run(); // You can inject your own code or
+combine it with other sketches. // Check other
+examples on how to communicate with Blynk.
+Remember // to avoid delay() function!
+listen_push_buttons();}
+if(digitalRead(button1_pin) == LOW){
+delay(200);
+ control_relay(1);
+Blynk.virtualWrite(button1_vpin, relay1_state);
+
+
+b servo motor
+
+SERVO MOTOR:
+from time import sleep
+from machine import Pin, PWM
+pwm = PWM(Pin(1))
+pwm.freq(50)
+while True:
+    for position in range(1000,9000,50):
+        pwm.duty_u16(position)
+        sleep(0.01)
+for position in range(9000,1000,-50):
+    pwm.duty_u16(position)
+    sleep(0.01)
+
+
+https://wokwi.com/projects/394124032950921217 - blynk
+
+https://wokwi.com/projects/393490643762695169 - servo
+
+https://wokwi.com/projects/395752085205705729 - led switch
