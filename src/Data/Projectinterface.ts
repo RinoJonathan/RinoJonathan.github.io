@@ -22,7 +22,7 @@ export const placeholderProject : ProjectInterface = {
 }
 
 
-export const ProjectList = [
+export const ProjectList : ProjectInterface[] = [
     {
 
         name: "Digi AI",

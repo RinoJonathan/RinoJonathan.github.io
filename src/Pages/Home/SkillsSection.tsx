@@ -1,4 +1,5 @@
 import SkillComponent from "@/CustomComponents/Skills/SkillComponent";
+import { skillList } from "@/Data/SkillsInterface";
 
 export default function SkillsSection() {
   return (
@@ -8,18 +9,11 @@ export default function SkillsSection() {
          <div className="w-full md:w-10/12 m-auto p-12 min-h-screen  flex flex-row justify-center  items-center flex-wrap">
        
 
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
-        <SkillComponent/>
+        {
+            skillList.map((skill, id) => <SkillComponent key={id} skill={skill}/>)
+        }
+
+
 
 
     </div>
