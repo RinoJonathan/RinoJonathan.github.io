@@ -1,4 +1,4 @@
-import { placeholderProject, ProjectInterface } from "../../Interfaces/Projectinterface";
+import { placeholderProject, ProjectInterface } from "../../Data/Projectinterface";
 import ProjectPreview from "./ProjectPreview";
 
 interface ProductProp {

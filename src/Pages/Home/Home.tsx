@@ -1,4 +1,4 @@
-import Project from "../../Components/Projects/Project";
+import Project from "../../CustomComponents/Projects/Project";
 import HeroSection from "./HeroSection";
 
 

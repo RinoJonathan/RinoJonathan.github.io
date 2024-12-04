@@ -6,7 +6,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
-import { ProjectInterface } from "@/Interfaces/Projectinterface";
+import { ProjectInterface } from "@/Data/Projectinterface";
 
 interface ProjectPreviewProps {
   content: ProjectInterface;
