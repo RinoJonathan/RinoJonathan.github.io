@@ -1,13 +1,29 @@
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { placeholderProject, ProjectInterface } from "../../Data/Projectinterface";
 import ProjectPreview from "./ProjectPreview";
+import { ProjectPopupState } from "@/Data/Project";
 
 interface ProductProp {
     projectData?: ProjectInterface;
 }
 
 export default function ({ projectData = placeholderProject }: ProductProp) {
+
+    const pState = useRecoilState(ProjectPopupState)
+    const setPopupState = useSetRecoilState(ProjectPopupState)
+
+    const openPopup = () => {
+
+        console.log(pState)
+        setPopupState(state => {
+            return state ? false : projectData
+        })
+    }
+
     return (
-        <div className=' bg-tblue col-span-4 row-span-8 rounded-xl text-white'>
+        <>
+        <div className=' bg-tblue col-span-4 row-span-8 rounded-xl text-white'
+            onClick={openPopup}>
             <h1 className="text-center text-xl p-2 m-4">{projectData.name}</h1>
             
             <img
@@ -29,9 +45,11 @@ export default function ({ projectData = placeholderProject }: ProductProp) {
                 )}
             </div>
 
-            <ProjectPreview content={projectData}isOpen={true} onClose={() => console.log("closed")}/>
+            
 
         </div>
+        <ProjectPreview content={projectData}/>
+        </>
     )
 }
 

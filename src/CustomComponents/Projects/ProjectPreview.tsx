@@ -7,18 +7,28 @@ import {
 } from "@/components/ui/carousel";
 import { Link } from "react-router-dom";
 import { ProjectInterface } from "@/Data/Projectinterface";
+import { useRecoilState } from "recoil";
+import { ProjectPopupState } from "@/Data/Project";
 
 interface ProjectPreviewProps {
   content: ProjectInterface;
-  isOpen: boolean;
-  onClose: () => void;
 }
 
-const ProjectPreview: React.FC<ProjectPreviewProps> = ({ content, isOpen, onClose }) => {
-  if (!isOpen) return null;
+const ProjectPreview: React.FC<ProjectPreviewProps> = ({ content }) => {
+
+  const [popupState, setPopupState] = useRecoilState(ProjectPopupState)
+
+  const onClose = () => {
+    console.log(popupState)
+    setPopupState(false)
+  }
+ 
+
 
   return (
-    <div className="fixed inset-0 bg-black text-black bg-opacity-10 flex justify-center items-center z-50">
+    <>
+    {popupState && (
+      <div className="fixed inset-0 bg-black text-black bg-opacity-10 flex justify-center items-center z-50">
       <div className="relative bg-white p-6 rounded-lg shadow-lg w-11/12 min-h-[70%] flex flex-col overflow-scroll">
         {/* Close Button */}
         <button
@@ -80,6 +90,8 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ content, isOpen, onClos
         </div>
       </div>
     </div>
+    )}
+    </>
   );
 };
 

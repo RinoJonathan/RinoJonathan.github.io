@@ -1,12 +1,12 @@
 export interface ProjectInterface {
 
-    name : String;
-    brief?: String;
-    description: String;
+    name : string;
+    brief?: string;
+    description: string;
     images : string[];
     technologies: string[];
-    video?: String;
-    link? : String;
+    video?: string;
+    link? : string;
 
 }
 
