@@ -29,7 +29,7 @@ export default function ({ projectData = placeholderProject }: ProductProp) {
                 )}
             </div>
 
-            <ProjectPreview content="temp" isOpen={true} onClose={() => console.log("closed")}/>
+            <ProjectPreview content={projectData}isOpen={true} onClose={() => console.log("closed")}/>
 
         </div>
     )
