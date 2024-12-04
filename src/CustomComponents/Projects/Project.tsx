@@ -22,7 +22,7 @@ export default function ({ projectData = placeholderProject }: ProductProp) {
 
     return (
         <>
-        <div className=' bg-tblue col-span-4 row-span-8 rounded-xl text-white'
+        <div className=' bg-gradient-to-tl  bg-tpurple col-span-4 row-span-8 rounded-xl text-white'
             onClick={openPopup}>
             <h1 className="text-center text-xl p-2 m-4">{projectData.name}</h1>
             

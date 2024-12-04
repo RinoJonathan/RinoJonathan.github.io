@@ -1,3 +1,4 @@
+import './Home.css'
 
 export default function HeroSection() {
   return (
@@ -8,7 +9,9 @@ export default function HeroSection() {
     <button className="text-xl mx-auto my-8 p-4 border rounded-md hover:bg-white hover:text-tblue">
       Contact me
     </button>
-
+    <div>
+      
+    </div>
 
   </section>
   )
