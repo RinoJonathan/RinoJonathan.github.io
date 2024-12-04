@@ -1,6 +1,7 @@
-import Project from "../../CustomComponents/Projects/Project";
+// import Project from "../../CustomComponents/Projects/Project";
 import HeroSection from "./HeroSection";
 import ProjectSection from "./ProjectSection";
+import SkillsSection from "./SkillsSection";
 
 
 export default function Home() {
@@ -14,11 +15,12 @@ export default function Home() {
       </section >
       <section className=" z-20  min-h-screen w-full bg-gradient-to-br from-tpurple to-tblue">
         <div className="hollow-arrow"></div>
-        <div className="w-full min-h-screen grid grid-cols-4 sm:grid-cols-8 md:grid-cols-12 grid-rows-12 gap-12 p-12">
+        
 
           <ProjectSection/>
 
-          <Project/>
+          <SkillsSection/>
+
           
           {/* <Project/>
           <Project/>
@@ -31,7 +33,7 @@ export default function Home() {
           <Project/>
           <Project/> */}
 
-        </div>
+
       </section>
     </main>
   )
