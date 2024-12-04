@@ -48,7 +48,7 @@ export default function ({ projectData = placeholderProject }: ProductProp) {
             
 
         </div>
-        <ProjectPreview content={projectData}/>
+        <ProjectPreview projectData={projectData}/>
         </>
     )
 }

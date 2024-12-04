@@ -1,5 +1,6 @@
 import Project from "../../CustomComponents/Projects/Project";
 import HeroSection from "./HeroSection";
+import ProjectSection from "./ProjectSection";
 
 
 export default function Home() {
@@ -15,8 +16,11 @@ export default function Home() {
         <div className="hollow-arrow"></div>
         <div className="w-full min-h-screen grid grid-cols-4 sm:grid-cols-8 md:grid-cols-12 grid-rows-12 gap-12 p-12">
 
+          <ProjectSection/>
+
           <Project/>
-          <Project/>
+          
+          {/* <Project/>
           <Project/>
 
           <Project/>
@@ -25,7 +29,7 @@ export default function Home() {
 
           <Project/>
           <Project/>
-          <Project/>
+          <Project/> */}
 
         </div>
       </section>

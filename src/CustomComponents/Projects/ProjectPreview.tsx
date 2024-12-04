@@ -11,10 +11,10 @@ import { useRecoilState } from "recoil";
 import { ProjectPopupState } from "@/Data/Project";
 
 interface ProjectPreviewProps {
-  content: ProjectInterface;
+  projectData: ProjectInterface;
 }
 
-const ProjectPreview: React.FC<ProjectPreviewProps> = ({ content }) => {
+const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
 
   const [popupState, setPopupState] = useRecoilState(ProjectPopupState)
 
@@ -44,7 +44,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ content }) => {
           {/* Carousel Section */}
           <Carousel className="h-[90%] w-full sm:w-11/12 max-w-3xl">
             <CarouselContent className="h-full">
-              {content.video && (
+              {projectData.video && (
                 <CarouselItem className="h-full flex items-center justify-center">
                   <iframe
                     className="rounded-xl h-full w-full"
@@ -57,7 +57,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ content }) => {
                   ></iframe>
                 </CarouselItem>
               )}
-              {content.images.map((image, index) => (
+              {projectData.images.map((image, index) => (
                 <CarouselItem key={index} className="h-full flex items-center justify-center">
                   <img src={image} alt={`Project Image ${index}`} className="max-h-full max-w-full" />
                 </CarouselItem>
@@ -70,10 +70,10 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ content }) => {
 
         {/* Details Section */}
         <div className="mt-4 text-center text-sm">
-          <h1 className="text-xl font-bold">{content.name}</h1>
-          <p className="mt-2">{content.description}</p>
-          {content.link && (
-            <Link to={content.link}>
+          <h1 className="text-xl font-bold">{projectData.name}</h1>
+          <p className="mt-2">{projectData.description}</p>
+          {projectData.link && (
+            <Link to={projectData.link}>
               <button className="mx-auto mt-4 p-2 border rounded-md hover:bg-white hover:text-tblue">
                 Visit Site
               </button>
@@ -81,7 +81,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ content }) => {
           )}
           <p className="mt-4">Technologies Used:</p>
           <div className="flex flex-wrap justify-center mt-2">
-            {content.technologies.map((tech, id) => (
+            {projectData.technologies.map((tech, id) => (
               <div key={id} className="m-1 p-2 bg-tpurple rounded-xl text-xs text-white">
                 {tech}
               </div>
