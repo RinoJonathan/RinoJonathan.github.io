@@ -27,7 +27,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
 
   return (
     <>
-    {popupState && (
+    {popupState && (popupState.name === projectData.name) && (
       <div className="fixed inset-0 bg-black text-black bg-opacity-10 flex justify-center items-center z-50">
       <div className="bg-gradient-to-tl  bg-tpurple relative  p-6 rounded-lg shadow-lg w-11/12 min-h-[70%] flex flex-col overflow-scroll">
         {/* Close Button */}
