@@ -1,0 +1,90 @@
+.hero {
+    background-image: url('/img/hero_background.jpg');
+
+    background-attachment: fixed;
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh; /* Full viewport height */
+    width: 100%;   /* Full width */
+   
+   
+    position: fixed; /* Keep the content in place */
+    z-index: -10; /* Ensure it's on top of the background */
+    color: white; /* Adjust color for readability */
+    text-align: center;
+}
+
+.content{
+  width: 100%;
+
+  background-position: 50% 50%;
+  position: relative;
+
+  left: 0;
+  opacity: 1;
+}
+
+.hero-content{
+position: fixed;
+z-index: 0;
+
+}
+
+.anchor{
+
+  
+  width: 100%;
+  height: 100vh;
+}
+
+
+.hollow-arrow {
+    width: 100%;
+    height: 40px;
+    background-image: url("../img/content_hollow-arrow.png");
+    background-position: 50% 50%;
+    position: relative;
+    top: -40px;
+    left: 0;
+    opacity: 1;
+  }
+
+
+  .aurora {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -9; /* Behind the content */
+    pointer-events: none; /* Ensure it doesn't interfere with user interactions */
+    animation: aurora-borealis 8s linear infinite;
+    background-size: 200% 200%;
+    background-image: radial-gradient(transparent 0, transparent 20%),
+    radial-gradient(at 62% 9%, #00256b 0px, transparent 50%),
+    radial-gradient(at 69% 60%, #b312c9 0px, transparent 50%),
+    radial-gradient(at 74% 60%, #00E3E7 0px, transparent 50%),
+    radial-gradient(at 24% 89%, #00FFFF 0px, transparent 50%),
+    radial-gradient(at 38% 69%, #062043 0px, transparent 50%),
+    radial-gradient(at 51% 77%, #07113F 0px, transparent 50%),
+    radial-gradient(at 63% 75%, #000000 0px, transparent 50%),
+    radial-gradient(at 78% 92%, #4c9405 0px, transparent 50%);
+  }
+  
+  @keyframes aurora-borealis {
+    0% {
+      background-position: center, 50% 50%, 30% 100%, 100% 10%, 21% 23%, 0% 80%;
+    }
+    33.333% {
+      background-position: center, 10% 75%, 40% 80%, 60% 20%, 43% 23%, 16% 30%;
+    }
+    66.666% {
+      background-position: center, 25% 45%, 80% 50%, 10% 10%, 66% 5%, 30% 0%;
+    }
+    100% {
+      background-position: center, 50% 50%, 30% 100%, 100% 10%, 21% 23%, 0% 72%;
+    }
+  }
+  
