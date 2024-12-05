@@ -6,7 +6,7 @@ import TwitterIcon from "../../../assets/TwitterIcon";
 
 export default function Footer() {
   return (
-    <footer className="content min-h-screen bg-tblack text-white flex flex-col justify-center items-center">
+    <footer id='contact' className="content min-h-screen bg-tblack text-white flex flex-col justify-center items-center">
       <div className="w-4/5 mx-auto border-b-2 p-8 m-8 text-center">
         <h1 className="text-6xl">Contact</h1>
       </div>
@@ -16,21 +16,21 @@ export default function Footer() {
           {
             icon: <EmailIcon style="w-28 h-28" />,
             text: "arulrinojonathan@gmail.com",
-            link: "",
+            link: "mailto:arulrinojonathan@gmail.com",
           },
           {
             icon: <TwitterIcon style="w-28 h-28" />,
             text: "@RinoJonathanP",
-            link: "",
+            link: "https://twitter.com/RinoJonathanP",
           },
           {
             icon: <LinkedinIcon style="w-28 h-28" />,
             text: "rino-jonathan",
-            link: "",
+            link: "https://www.linkedin.com/in/rino-jonathan/",
           },
         ].map((item, index) => (
           <div key={index} className="flex flex-col items-center text-center">
-            <Link className="mb-4" to={item.link}>
+            <Link className="mb-4" to={item.link} target="_blank" rel="noopener noreferrer">
               {item.icon}
             </Link>
             <span>{item.text}</span>

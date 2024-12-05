@@ -74,7 +74,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
           <h1 className="text-xl font-bold">{projectData.name}</h1>
           <p className="mt-2">{projectData.description}</p>
           {projectData.link && (
-            <Link  to={projectData.link}>
+            <Link  to={projectData.link} target="_blank" rel="noopener noreferrer">
               {/* <button className="mx-auto mt-4 p-2 border rounded-md hover:bg-white hover:text-tblue">
                 Visit Site
               </button> */}

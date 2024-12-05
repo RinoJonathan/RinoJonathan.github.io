@@ -15,7 +15,7 @@ export default function Navbar() {
   // }
 
   return (
-    <div className="fixed z-40 w-full min-h-20 grid grid-cols-12 gap-4 bg-gradient-to-b from-tblack to-transparent ">
+    <nav className="fixed p-8 z-40 w-full min-h-20 grid grid-cols-12 gap-4 bg-gradient-to-b from-tblack to-transparent ">
         
         {/* { (isMobileOrTablet && menuState) &&         
     <div className="absolute -z-2 bg-red-100  bg-opacity-30  w-56 min-h-8 p-4 py-20 mx-4">
@@ -49,13 +49,13 @@ export default function Navbar() {
         <div className="col-span-4 flex flex-row content-center justify-end ">
           
 
-          <Link className="mx-4 my-auto" to={''}> 
+          <Link className="mx-4 my-auto" to={'https://twitter.com/RinoJonathanP'} target="_blank" rel="noopener noreferrer"> 
           <TwitterIcon/>
           </Link>
-          <Link  className="mx-4 my-auto" to={''}> 
+          <Link  className="mx-4 my-auto" to={'https://github.com/JustinFrost47' } target="_blank" rel="noopener noreferrer"> 
           <GithubIcon/>
           </Link>
-          <Link className="mx-4 my-auto" to={''}> 
+          <Link className="mx-4 my-auto" to={'https://www.linkedin.com/in/rino-jonathan/'} target="_blank" rel="noopener noreferrer"> 
           <LinkedinIcon/>
           </Link>
 
@@ -65,6 +65,6 @@ export default function Navbar() {
 
 
 
-    </div>
+    </nav>
   )
 }
