@@ -1,5 +1,4 @@
 import { HashLink } from 'react-router-hash-link'
-import { Link } from 'react-router-dom';
 import './Home.css';
 import AuroraButton from '@/CustomComponents/ArouraButton/AuroraButton';
 
