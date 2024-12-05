@@ -37,7 +37,7 @@ export const ProjectList : ProjectInterface[] = [
         name: "Project-V",
         brief: "Project V is an PWA based online video editor that allows you to edit videos directly from the client side without the need to upload them to the internet",
         description: "Project V is an PWA based online video editor that allows you to edit videos directly from the client side without the need to upload them to the internet With Project V, we aim to maintain the convenience of online video editing while eliminating the need to upload files to a remote server. So you can edit Anywhere Anytime",
-        images: ["/projects/digi-ai/01.png", "/projects/digi-ai/02.png", "/projects/digi-ai/03.png"],
+        images: ["/projects/project-v/01.png", "/projects/digi-ai/02.png", "/projects/digi-ai/03.png"],
         technologies: ["Nodejs", "Mongodb", "Redis", "WASM", "FFPEG", "ejs", "javascript", "html", "css"  ],
         video: "https://www.youtube.com/embed/LZ1zYCbrSsU?si=EMrttkGS1OYjPjQg",
         link: "https://projectv.alflux.com/",
