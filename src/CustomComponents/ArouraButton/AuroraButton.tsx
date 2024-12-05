@@ -1,10 +1,15 @@
+
 import './AuroraButton.css'
 
-export default function AuroraButton() {
+interface AuroraButtonProp {
+  text: string
+}
+
+export default function AuroraButton({text} : AuroraButtonProp)  {
   return (
     <button className="auroraButton">
       <span className="auroraButton__inner ">
-        <span className="auroraButton__label" data-label="Get in touch" data-hover="Lets Go">
+        <span className="auroraButton__label" data-label={text} data-hover={text}>
           Get in touch
           <span className="auroraButton__labelBackground"></span>
         </span>

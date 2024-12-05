@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { ProjectInterface } from "@/Data/Projectinterface";
 import { useRecoilState } from "recoil";
 import { ProjectPopupState } from "@/Data/Project";
+import AuroraButton from "../ArouraButton/AuroraButton";
 
 
 interface ProjectPreviewProps {
@@ -73,10 +74,13 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
           <h1 className="text-xl font-bold">{projectData.name}</h1>
           <p className="mt-2">{projectData.description}</p>
           {projectData.link && (
-            <Link to={projectData.link}>
-              <button className="mx-auto mt-4 p-2 border rounded-md hover:bg-white hover:text-tblue">
+            <Link  to={projectData.link}>
+              {/* <button className="mx-auto mt-4 p-2 border rounded-md hover:bg-white hover:text-tblue">
                 Visit Site
-              </button>
+              </button> */}
+              <div className="my-4" >
+              <AuroraButton text="Visit Site"/>
+              </div>
             </Link>
           )}
           <p className="mt-4">Technologies Used:</p>

@@ -16,7 +16,7 @@ export default function HeroSection() {
         I am a computer science engineering student with a passion for building software. I believe in continuous learning and am eager to take on new challenges. Take a look at my work and feel free to reach out for a chat.
       </p>
       <div className='mx-auto'>
-      <AuroraButton/>
+      <AuroraButton text='Contact Me'/>
       </div>
       {/* <button className="text-xl mx-auto my-8 p-4 border rounded-md hover:bg-white hover:text-tblue">
         Contact me
