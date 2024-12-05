@@ -31,7 +31,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
     <>
     {popupState && (popupState.name === projectData.name) && (
       <div className="fixed inset-0 bg-black text-black bg-opacity-10 flex justify-center items-center z-50">
-      <div className="bg-gradient-to-tl  bg-tpurple relative  p-6 rounded-lg shadow-lg w-11/12 min-h-[70%] flex flex-col overflow-scroll">
+      <div className="bg-gradient-to-tl  bg-tpurple relative  p-6 rounded-lg shadow-lg w-11/12 h-[95%] flex flex-col overflow-scroll">
         {/* Close Button */}
         <button
           className="absolute top-2 right-2 px-2 py-1 text-white text-sm font-bold bg-red-700 rounded-full"
