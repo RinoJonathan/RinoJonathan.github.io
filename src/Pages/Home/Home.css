@@ -36,7 +36,7 @@
     height: 100%;
     z-index: -1; /* Behind the content */
     pointer-events: none; /* Ensure it doesn't interfere with user interactions */
-    animation: aurora-borealis 15s linear infinite;
+    animation: aurora-borealis 8s linear infinite;
     background-size: 200% 200%;
     background-image: radial-gradient(transparent 0, transparent 20%),
     radial-gradient(at 62% 9%, #00256b 0px, transparent 50%),
