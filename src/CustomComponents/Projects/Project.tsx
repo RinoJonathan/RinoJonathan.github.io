@@ -22,7 +22,9 @@ export default function ({ projectData = placeholderProject }: ProductProp) {
 
     return (
         <>
-        <div className=' bg-gradient-to-tl  bg-tpurple col-span-4 row-span-8 rounded-xl text-white'
+        <div className=' bg-gradient-to-tl  bg-tpurple col-span-4 row-span-8 rounded-xl text-white cursor-pointer 
+                        transform transition-transform duration-300 hover:scale-105 
+                         drop-shadow-sm  hover:shadow-[0_0_20px_10px_rgba(138,43,226,0.5),0_0_20px_10px_rgba(65,105,225,0.5)]'
             onClick={openPopup}>
             <h1 className="text-center text-xl p-2 m-4">{projectData.name}</h1>
             
