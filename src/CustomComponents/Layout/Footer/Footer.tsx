@@ -1,3 +1,4 @@
+import './Footer.css'
 import { Link } from "react-router-dom";
 import EmailIcon from "../../../assets/EmailIcon";
 import LinkedinIcon from "../../../assets/LinkedinIcon";
@@ -5,7 +6,7 @@ import TwitterIcon from "../../../assets/TwitterIcon";
 
 export default function Footer() {
   return (
-    <footer className="min-h-screen bg-tblack text-white flex flex-col justify-center items-center">
+    <footer className="content min-h-screen bg-tblack text-white flex flex-col justify-center items-center">
       <div className="w-4/5 mx-auto border-b-2 p-8 m-8 text-center">
         <h1 className="text-6xl">Contact</h1>
       </div>

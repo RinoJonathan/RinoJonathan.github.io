@@ -15,7 +15,7 @@ export default function Navbar() {
   // }
 
   return (
-    <div className="absolute w-full min-h-20 grid grid-cols-12 gap-4 bg-gradient-to-b from-tblack to-transparent ">
+    <div className="fixed z-40 w-full min-h-20 grid grid-cols-12 gap-4 bg-gradient-to-b from-tblack to-transparent ">
         
         {/* { (isMobileOrTablet && menuState) &&         
     <div className="absolute -z-2 bg-red-100  bg-opacity-30  w-56 min-h-8 p-4 py-20 mx-4">

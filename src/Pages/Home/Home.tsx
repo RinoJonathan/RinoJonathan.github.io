@@ -10,10 +10,9 @@ export default function Home() {
 
       <HeroSection />
 
-      <section className=" z-20  min-h-screen w-full ">
 
-      </section >
-      <section className=" z-20  min-h-screen w-full bg-gradient-to-br from-tpurple to-tblue">
+      <div className="content">
+      <section className="  min-h-screen w-full bg-gradient-to-br from-tpurple to-tblue">
         <div className="hollow-arrow"></div>
         
 
@@ -35,6 +34,7 @@ export default function Home() {
 
 
       </section>
+      </div>
     </main>
   )
 }

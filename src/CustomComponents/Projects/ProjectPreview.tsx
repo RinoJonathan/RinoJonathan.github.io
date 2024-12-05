@@ -10,6 +10,7 @@ import { ProjectInterface } from "@/Data/Projectinterface";
 import { useRecoilState } from "recoil";
 import { ProjectPopupState } from "@/Data/Project";
 
+
 interface ProjectPreviewProps {
   projectData: ProjectInterface;
 }
