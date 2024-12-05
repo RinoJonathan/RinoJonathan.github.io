@@ -12,13 +12,17 @@ export default function Home() {
 
 
       <div className="content">
-      <section className="  min-h-screen w-full bg-gradient-to-br from-tpurple to-tblue">
-        <div className="hollow-arrow"></div>
+      
+        
         
 
           <ProjectSection/>
 
-          <SkillsSection/>
+
+      
+        <SkillsSection/>
+
+          
 
           
           {/* <Project/>
@@ -33,7 +37,7 @@ export default function Home() {
           <Project/> */}
 
 
-      </section>
+
       </div>
     </main>
   )

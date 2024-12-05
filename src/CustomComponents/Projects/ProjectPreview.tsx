@@ -70,8 +70,8 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
         </div>
 
         {/* Details Section */}
-        <div className="mt-4 text-center text-sm">
-          <h1 className="text-xl font-bold">{projectData.name}</h1>
+        <div className="mt-4 text-center text-sm text-white">
+          <h1 className="text-xl font-bold p-4">{projectData.name}</h1>
           <p className="mt-2">{projectData.description}</p>
           {projectData.link && (
             <Link  to={projectData.link} target="_blank" rel="noopener noreferrer">
