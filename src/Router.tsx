@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Layout from "./CustomComponents/Layout/Layout";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
  
 
 export default function Router() {
   return (
     <BrowserRouter>
+    <TooltipProvider delayDuration={1} >
     <Routes>
         <Route element={<Layout/>}> 
 
@@ -13,6 +15,7 @@ export default function Router() {
 
         </Route>
     </Routes>
+    </TooltipProvider>
     </BrowserRouter>
   )
 }

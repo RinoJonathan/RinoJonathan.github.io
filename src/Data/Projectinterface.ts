@@ -7,6 +7,8 @@ export interface ProjectInterface {
     technologies: string[];
     video?: string;
     link? : string;
+    code?: string;    
+    collab?: string;
 
 }
 
@@ -18,7 +20,7 @@ export const placeholderProject : ProjectInterface = {
     images: ["/projects/digi-ai/01.webp", "/projects/digi-ai/02.webp", "/projects/digi-ai/03.webp"],
     technologies: ["Langchain", "Python", "React.js", "Tailwind CSS", "TypeScript", "GCP" ],
     video: "https://www.youtube.com/watch?v=YP6nPvO8Rgk",
-    link: "https://www.youtube.com/watch?v=YP6nPvO8Rgk",
+    
 }
 
 
@@ -31,6 +33,7 @@ export const ProjectList : ProjectInterface[] = [
         images: ["/projects/digi-ai/01.webp", "/projects/digi-ai/02.webp", "/projects/digi-ai/03.webp"],
         technologies: ["Langchain", "Python", "React.js", "Tailwind CSS", "TypeScript", "GCP" ],
         video: "https://www.youtube.com/embed/YP6nPvO8Rgk?si=7bfQxaHrFX4yxiB9",
+        collab: "Digisailor"
     },
     {
 
@@ -41,6 +44,7 @@ export const ProjectList : ProjectInterface[] = [
         technologies: ["Nodejs", "Mongodb", "Redis", "WASM", "FFPEG", "ejs", "javascript", "html", "css"  ],
         video: "https://www.youtube.com/embed/LZ1zYCbrSsU?si=EMrttkGS1OYjPjQg",
         link: "https://projectv.alflux.com/",
+        collab: "projectV"
     },
     {
 
@@ -61,6 +65,7 @@ export const ProjectList : ProjectInterface[] = [
             "WebSocket", 
             "REST APIs"
         ],
+        collab: "Digisailor"
     },    
     {
 
@@ -107,7 +112,8 @@ export const ProjectList : ProjectInterface[] = [
             "Bootstrap",
             "GPT-3"
         ],
-        link: "https://justinfrost47.github.io/GPT-Positioning-Statement/"
+        link: "https://justinfrost47.github.io/GPT-Positioning-Statement/",
+        code: "https://github.com/JustinFrost47/GPT-Positioning-Statement"
     },
     {
         name : "Anime Search",
@@ -120,7 +126,8 @@ export const ProjectList : ProjectInterface[] = [
             "JavaScript",
             "Jikan-API"
         ],
-        link: "https://justinfrost47.github.io/anime-search/"
+        link: "https://justinfrost47.github.io/anime-search/",
+        code: "https://github.com/JustinFrost47/anime-search"
     },
     {
         name: "Bash Timer",
@@ -132,6 +139,7 @@ export const ProjectList : ProjectInterface[] = [
             "Zsh",
             "Unix-Terminal"
         ],
+        code: "https://github.com/JustinFrost47/BashTimer"
     }
     
     
