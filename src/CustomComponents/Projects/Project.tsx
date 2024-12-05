@@ -36,12 +36,8 @@ export default function ({ projectData = placeholderProject }: ProductProp) {
             <p className="p-1 px-2">Technologies Used:</p>
             <div className="w-full  p-1 flex flex-row flex-wrap content-center items-center">
                 
-                {projectData.technologies.map((tech, id) => <>
+                {projectData.technologies.map((tech, id) => 
                     <div key={id} className="m-1 p-1 bg-tpurple rounded-xl text-xs">{tech}</div>
-
-                </>
-
-
                 )}
             </div>
 
