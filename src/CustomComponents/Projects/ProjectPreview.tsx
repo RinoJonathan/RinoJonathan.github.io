@@ -48,7 +48,7 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
                 <CarouselItem className="h-full flex items-center justify-center">
                   <iframe
                     className="rounded-xl h-full w-full"
-                    src="https://www.youtube.com/embed/YP6nPvO8Rgk?si=S5ETkeG2_4eiyeyL"
+                    src={projectData.video}
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"

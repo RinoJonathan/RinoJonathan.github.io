@@ -1,4 +1,4 @@
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { placeholderProject, ProjectInterface } from "../../Data/Projectinterface";
 import ProjectPreview from "./ProjectPreview";
 import { ProjectPopupState } from "@/Data/Project";
@@ -9,8 +9,8 @@ interface ProductProp {
 
 export default function ({ projectData = placeholderProject }: ProductProp) {
 
-    const pState = useRecoilState(ProjectPopupState)
-    const setPopupState = useSetRecoilState(ProjectPopupState)
+    const [pState, setPopupState] = useRecoilState(ProjectPopupState)
+    
 
     const openPopup = () => {
 
