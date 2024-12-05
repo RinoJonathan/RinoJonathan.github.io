@@ -9,6 +9,7 @@ export interface ProjectInterface {
     link? : string;
     code?: string;    
     collab?: string;
+    legacy?: boolean;
 
 }
 
@@ -27,16 +28,6 @@ export const placeholderProject : ProjectInterface = {
 export const ProjectList : ProjectInterface[] = [
     {
 
-        name: "Digi AI",
-        brief: "An AI-powered chatbot designed to serve as your personal data analyst",
-        description: "DigiAI is an AI-powered chatbot designed to serve as your personal data analyst. It leverages langchain and GPT-4 to analyze structured data, providing insightful answers to your queries. Whether you're looking to understand complex datasets or generate comprehensive visualizations, DigiAI is equipped to enhance your data-driven decision-making processes.",
-        images: ["/projects/digi-ai/01.webp", "/projects/digi-ai/02.webp", "/projects/digi-ai/03.webp"],
-        technologies: ["Langchain", "Python", "React.js", "Tailwind CSS", "TypeScript", "GCP" ],
-        video: "https://www.youtube.com/embed/YP6nPvO8Rgk?si=7bfQxaHrFX4yxiB9",
-        collab: "Digisailor"
-    },
-    {
-
         name: "Project-V",
         brief: "Project V is an PWA based online video editor that allows you to edit videos directly from the client side without the need to upload them to the internet",
         description: "Project V is an PWA based online video editor that allows you to edit videos directly from the client side without the need to upload them to the internet With Project V, we aim to maintain the convenience of online video editing while eliminating the need to upload files to a remote server. So you can edit Anywhere Anytime",
@@ -44,7 +35,26 @@ export const ProjectList : ProjectInterface[] = [
         technologies: ["Nodejs", "Mongodb", "Redis", "WASM", "FFPEG", "ejs", "javascript", "html", "css"  ],
         video: "https://www.youtube.com/embed/LZ1zYCbrSsU?si=EMrttkGS1OYjPjQg",
         link: "https://projectv.alflux.com/",
-        collab: "projectV"
+        collab: "projectV",
+    },
+    {
+        name: "Inventory Stock Tracker",
+        brief: "A fullstack web application built using the PERN stack  and Docker to track inventory. ",
+        description: "Inventory Stock Tracker is a fullstack web application built with the PERN stack and Docker Compose. The project allows you to track inventory in real time while providing hands-on experience with Docker, PostgreSQL, and the modern tech stack. The frontend uses React and Tailwind, while the backend is built with Express and TypeScript. This project gave me valuable insights into containerization and service orchestration.",
+        images: ["/projects/stock-tracker/01.webp", "/projects/stock-tracker/02.webp", "/projects/stock-tracker/03.webp"],
+        technologies: ["Express", "Postgres", "Node.js", "TypeScript", "Docker", "React", "Tailwind"],
+        video: "https://www.youtube.com/embed/_9rnNHJle68?si=9saglF0YvGdnvqh2",
+        code: "https://github.com/JustinFrost47/InventoryStockTracker"
+    },
+    {
+
+        name: "Digi AI",
+        brief: "An AI-powered chatbot designed to serve as your personal data analyst",
+        description: "DigiAI is an AI-powered chatbot designed to serve as your personal data analyst. It leverages langchain and GPT-4 to analyze structured data, providing insightful answers to your queries. Whether you're looking to understand complex datasets or generate comprehensive visualizations, DigiAI is equipped to enhance your data-driven decision-making processes.",
+        images: ["/projects/digi-ai/01.webp", "/projects/digi-ai/02.webp", "/projects/digi-ai/03.webp"],
+        technologies: ["Langchain", "Python", "React.js", "Tailwind CSS", "TypeScript", "GCP" ],
+        video: "https://www.youtube.com/embed/YP6nPvO8Rgk?si=7bfQxaHrFX4yxiB9",
+        collab: "Digisailor",
     },
     {
 
@@ -65,7 +75,7 @@ export const ProjectList : ProjectInterface[] = [
             "WebSocket", 
             "REST APIs"
         ],
-        collab: "Digisailor"
+        collab: "Digisailor",
     },    
     {
 
@@ -82,7 +92,24 @@ export const ProjectList : ProjectInterface[] = [
             "C#"
         ],
 
-    },
+    },  
+    {
+        name: "Holo Vista",
+        brief: "HOLO-VISTA is a project that explores the concept of sharing and experiencing NFTs in a virtual reality gallery. ",
+        description: "HOLO-VISTA is a project that aims to push the boundaries of how NFTs are shared and experienced in a virtual reality environment. By utilizing Solana's Token 22 program, the project allows users to create and fetch NFTs seamlessly. The VR gallery, built with A-Frame, offers an immersive way to view and interact with NFTs in 3D. This experimental approach brings the future of NFTs and virtual reality together, allowing users to explore digital assets in a whole new way.",
+        images: ["/projects/holo-vista/01.webp", "/projects/holo-vista/02.webp", "/projects/holo-vista/03.webp"],
+        technologies: ["Web-VR", "Web3", "3D", "Solana", "Token22 program", "NFT",  "React", "Typescript", "A-Frame", "Tailwind",  ],
+        link: "https://holo-vista.vercel.app/"
+    },    
+    {
+        name: "Wallet 3.0",
+        brief: "Wallet 3.0 is a simple and secure crypto wallet built during my Web3 learning journey at 100xDevs.",
+        description: "Wallet 3.0 is a straightforward crypto wallet that helps users manage their keys without compromising on security. Users can generate a new mnemonic phrase and key pairs, or they can bring their own. The app avoids storing sensitive data like the mnemonic phrase in the browser's local storage, ensuring greater security. Developed during my time at 100xDevs, this project reflects my growing expertise in Web3 technologies.",
+        images: ["/projects/wallet-3/01.webp", "/projects/wallet-3/02.webp", "/projects/wallet-3/03.webp"],
+        technologies: ["Web3", "Solana", "RPC", "Cryptography", "React", "Typescript", "Tailwind", "ShadCN", ],
+        link: "https://justinfrost47.github.io/wallet-3.0/",
+        code: "https://github.com/JustinFrost47/wallet-3.0"
+    },  
     {
 
         name: "Sharon Rose Tailors - Site",
@@ -97,7 +124,8 @@ export const ProjectList : ProjectInterface[] = [
             "jQuery"
         ],
         video: "https://www.youtube.com/embed/7S73C9nxfQM?si=UZA_nTosTqzcPpoX",
-        link: "https://sharonrosetailors.github.io/"
+        link: "https://sharonrosetailors.github.io/",
+        legacy: true,
     },
     {
 
@@ -113,7 +141,8 @@ export const ProjectList : ProjectInterface[] = [
             "GPT-3"
         ],
         link: "https://justinfrost47.github.io/GPT-Positioning-Statement/",
-        code: "https://github.com/JustinFrost47/GPT-Positioning-Statement"
+        code: "https://github.com/JustinFrost47/GPT-Positioning-Statement",
+        legacy: true,
     },
     {
         name : "Anime Search",
@@ -127,7 +156,8 @@ export const ProjectList : ProjectInterface[] = [
             "Jikan-API"
         ],
         link: "https://justinfrost47.github.io/anime-search/",
-        code: "https://github.com/JustinFrost47/anime-search"
+        code: "https://github.com/JustinFrost47/anime-search",
+        legacy: true,
     },
     {
         name: "Bash Timer",
@@ -139,7 +169,8 @@ export const ProjectList : ProjectInterface[] = [
             "Zsh",
             "Unix-Terminal"
         ],
-        code: "https://github.com/JustinFrost47/BashTimer"
+        code: "https://github.com/JustinFrost47/BashTimer",
+        legacy: true,
     }
     
     

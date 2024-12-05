@@ -9,6 +9,7 @@ import {
     TooltipContent,
     TooltipTrigger,
   } from "@/components/ui/tooltip"
+import LegacyIcon from "@/assets/Badges/LegacyIcon";
 
 
 
@@ -63,6 +64,22 @@ const CollabBadge = ({lite=false, collab = "a team"} : BadgePropInterface) => (
   </div>
 );
 
+// Badge Component for LegacyProjects
+const LegacyBadge = ({lite=false} : BadgePropInterface) => (
+    <div className={lite? "" : "flex items-center space-x-2 bg-amber-700   text-white rounded-full px-2 py-2"}>
+          
+          <Tooltip>
+          <TooltipTrigger >
+           <LegacyIcon/>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Older project made during early stage of my career</p>
+          </TooltipContent>
+        </Tooltip>
+      
+    </div>
+  );
+
 // Badge Component for External Link
 const LinkBadge = ({lite=false} : BadgePropInterface) => (
   <div className={lite? "" : "flex items-center space-x-2 bg-blue-600 text-white rounded-full px-2 py-2"}>
@@ -85,6 +102,10 @@ interface BadgeGeneratorProps {
 
 const BadgeGenerator = ({ projectData, lite=false } : BadgeGeneratorProps) => {
   const badges = [];
+
+  if (projectData.legacy) {
+    badges.push(<LegacyBadge key="link" lite={lite} />);
+  }
 
   if (projectData.link) {
     badges.push(<LinkBadge key="link" lite={lite} />);
