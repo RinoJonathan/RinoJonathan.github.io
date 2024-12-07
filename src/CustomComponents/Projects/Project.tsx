@@ -1,3 +1,4 @@
+import {motion } from 'motion/react'
 import { useSetRecoilState } from "recoil";
 import { placeholderProject, ProjectInterface } from "../../Data/Projectinterface";
 import ProjectPreview from "./ProjectPreview";
@@ -6,6 +7,44 @@ import BadgeGenerator from "./BadgeGenerator";
 
 interface ProductProp {
   projectData?: ProjectInterface;
+}
+
+const animationList = {
+  offScreen : {
+    opacity: 0,
+    y: 100,
+  },
+  onScreen : {
+    opacity : 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      bounce: 0.4,
+      duration: 1
+    }
+  },
+  exitScreen: {
+    opacity : 0,
+    y: 100,
+    transition: {
+      type: "spring",
+      bounce: 0.4,
+      duration: 1
+    }
+  },
+  cardAnimation : {
+    scale: 1.05,
+    boxShadow: "0px 0px 20px 10px rgba(138,43,226,0.5), 0px 0px 20px 10px rgba(65,105,225,0.5)",
+    
+    transition: {
+      duration: 1,
+      type: "spring",
+      stiffness: 300,
+      damping: 20,
+  
+    }
+  },
+
 }
 
 export default function ({ projectData = placeholderProject }: ProductProp) {
@@ -19,12 +58,17 @@ export default function ({ projectData = placeholderProject }: ProductProp) {
 
   return (
     <>
-      <div
+      <motion.div
         className="w-96 min-h-80 bg-gradient-to-tl bg-tpurple rounded-xl text-white cursor-pointer 
-                   transform transition-transform duration-300 hover:scale-105 
-                   drop-shadow-sm hover:shadow-[0_0_20px_10px_rgba(138,43,226,0.5),0_0_20px_10px_rgba(65,105,225,0.5)] 
-                   flex flex-col"
+        flex flex-col"
         onClick={openPopup}
+
+        variants={animationList}
+        initial="offScreen"
+        whileHover="cardAnimation"
+        whileInView="onScreen"
+        
+        
       >
         <h1 className="text-center text-xl p-2 m-4">{projectData.name}</h1>
 
@@ -48,8 +92,10 @@ export default function ({ projectData = placeholderProject }: ProductProp) {
         <div className="mt-auto p-2">
           <BadgeGenerator projectData={projectData} lite={true} />
         </div>
-      </div>
+      </motion.div>
+      
       <ProjectPreview projectData={projectData} />
+      
     </>
   );
 }

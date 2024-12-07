@@ -10,8 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist" 
-
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
@@ -21,6 +20,7 @@
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.5.1",
     "lucide-react": "^0.464.0",
+    "motion": "^11.13.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-responsive": "^10.0.0",
