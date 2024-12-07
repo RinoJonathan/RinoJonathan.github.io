@@ -3,6 +3,23 @@ import { Link } from "react-router-dom";
 import TwitterIcon from "../../../assets/TwitterIcon";
 import GithubIcon from "../../../assets/GithubIcon";
 import LinkedinIcon from "../../../assets/LinkedinIcon";
+import { motion } from "motion/react";
+
+const buttonAnimations = {
+  buttonHover: {
+    scale : 1.05,
+    transition: { 
+      duration: 1,
+      type: "spring",
+      stiffness: 300,
+      damping: 20
+    }
+  },
+  buttonClick: {
+    scale: 0.95
+  }
+}
+
 
 
 export default function Navbar() {
@@ -49,16 +66,47 @@ export default function Navbar() {
         <div className="col-span-4 flex flex-row content-center justify-end ">
           
 
-          <Link className="mx-4 my-auto" to={'https://twitter.com/RinoJonathanP'} target="_blank" rel="noopener noreferrer"> 
+          <motion.div
+          className="mx-4 my-auto"
+          variants={buttonAnimations}
+          
+          whileHover="buttonHover"
+          whileTap="buttonClick">
+                      
+                      
+          <Link  to={'https://twitter.com/RinoJonathanP'} target="_blank" rel="noopener noreferrer"> 
           <TwitterIcon/>
           </Link>
-          <Link  className="mx-4 my-auto" to={'https://github.com/JustinFrost47' } target="_blank" rel="noopener noreferrer"> 
+
+          </motion.div>
+          <motion.div
+          className="mx-4 my-auto"
+          variants={buttonAnimations}
+          
+          whileHover="buttonHover"
+          whileTap="buttonClick">
+            
+          <Link   to={'https://github.com/JustinFrost47' } target="_blank" rel="noopener noreferrer"> 
           <GithubIcon/>
           </Link>
-          <Link className="mx-4 my-auto" to={'https://www.linkedin.com/in/rino-jonathan/'} target="_blank" rel="noopener noreferrer"> 
-          <LinkedinIcon/>
-          </Link>
 
+          </motion.div>
+          <motion.div
+          className="mx-4 my-auto" 
+          variants={buttonAnimations}
+          
+          whileHover="buttonHover"
+          whileTap="buttonClick">
+            
+            <Link to={'https://www.linkedin.com/in/rino-jonathan/'} target="_blank" rel="noopener noreferrer"> 
+              <LinkedinIcon/>
+            </Link>
+
+          </motion.div>
+
+
+
+          
           
           
         </div>

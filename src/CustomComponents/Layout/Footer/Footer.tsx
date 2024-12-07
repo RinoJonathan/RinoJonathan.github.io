@@ -3,6 +3,25 @@ import { Link } from "react-router-dom";
 import EmailIcon from "../../../assets/EmailIcon";
 import LinkedinIcon from "../../../assets/LinkedinIcon";
 import TwitterIcon from "../../../assets/TwitterIcon";
+import { motion } from 'motion/react';
+
+const buttonAnimations = {
+  buttonHover: {
+    scale : 1.05,
+    transition: { 
+      duration: 1,
+      type: "spring",
+      stiffness: 300,
+      damping: 20
+    }
+  },
+  buttonClick: {
+    scale: 0.95
+  }
+}
+
+
+
 
 export default function Footer() {
   return (
@@ -29,12 +48,18 @@ export default function Footer() {
             link: "https://www.linkedin.com/in/rino-jonathan/",
           },
         ].map((item, index) => (
-          <div key={index} className="flex flex-col items-center text-center">
+          <motion.div key={index} 
+          className="flex flex-col items-center text-center"
+          variants={buttonAnimations}
+          
+          whileHover="buttonHover"
+          whileTap="buttonClick"
+          >
             <Link className="mb-4" to={item.link} target="_blank" rel="noopener noreferrer">
               {item.icon}
             </Link>
             <span>{item.text}</span>
-          </div>
+          </motion.div>
         ))}
       </div>
     </footer>

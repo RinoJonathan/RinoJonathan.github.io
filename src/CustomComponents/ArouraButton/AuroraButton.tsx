@@ -1,13 +1,33 @@
 
+import { motion } from 'motion/react'
 import './AuroraButton.css'
 
 interface AuroraButtonProp {
   text: string
 }
 
+const buttonAnimations = {
+  buttonHover: {
+    scale : 1.05,
+    transition: { 
+      duration: 1,
+      type: "spring",
+      stiffness: 300,
+      damping: 20
+    }
+  },
+  buttonClick: {
+    scale: 0.95
+  }
+}
+
 export default function AuroraButton({text} : AuroraButtonProp)  {
   return (
-    <button className="auroraButton">
+    <motion.button 
+    className="auroraButton"
+    variants={buttonAnimations}
+    whileHover="buttonHover"
+    whileTap="buttonClick">
       <span className="auroraButton__inner ">
         <span className="auroraButton__label" data-label={text} data-hover={text}>
           Get in touch
@@ -15,6 +35,6 @@ export default function AuroraButton({text} : AuroraButtonProp)  {
         </span>
       </span>
       <span className="auroraButton__background"></span>
-    </button>
+    </motion.button>
   )
 }
