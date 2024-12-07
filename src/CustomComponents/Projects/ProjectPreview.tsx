@@ -11,10 +11,31 @@ import { useRecoilState } from "recoil";
 import { ProjectPopupState } from "@/Data/Project";
 import AuroraButton from "../ArouraButton/AuroraButton";
 import BadgeGenerator from "./BadgeGenerator";
+import { AnimatePresence, motion } from "motion/react";
+
 
 interface ProjectPreviewProps {
   projectData: ProjectInterface;
 }
+
+const animationList ={
+  hidden: { opacity: 0, scale: 0.4 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+
+    transition: {
+      duration: 0.4,
+      type: "spring",
+      stiffness: 300,
+      damping: 20,
+      
+    },
+  },
+  exit: { opacity: 0, scale: 0.4, transition: { duration: 0.3 } },
+
+};
+
 
 const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
 
@@ -26,9 +47,16 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
   }
 
   return (
-    <>
+   <AnimatePresence>
       {popupState && (popupState.name === projectData.name) && (
-     <div className="fixed inset-0 bg-black text-black bg-opacity-10 flex justify-center items-center z-50">
+     <motion.div
+      className="fixed inset-0 bg-black text-black bg-opacity-10 flex justify-center items-center z-50"
+      variants={animationList}
+
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      >
      <div className="bg-gradient-to-tl  bg-tpurple relative  p-6 rounded-lg shadow-lg w-11/12 h-[95%] flex flex-col overflow-scroll">
        {/* Close Button */}
        <button
@@ -109,9 +137,10 @@ const ProjectPreview: React.FC<ProjectPreviewProps> = ({ projectData }) => {
 
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
-    </>
+
+   </AnimatePresence>
   );
 };
 
