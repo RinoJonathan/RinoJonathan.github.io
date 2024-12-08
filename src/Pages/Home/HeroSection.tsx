@@ -1,6 +1,25 @@
 import { HashLink } from 'react-router-hash-link'
 import './Home.css';
 import AuroraButton from '@/CustomComponents/ArouraButton/AuroraButton';
+import { motion } from 'motion/react';
+
+
+const animationList = {
+  offScreen : {
+    opacity: 0,
+    y: 100,
+  },
+  onScreen : {
+    opacity : 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      bounce: 0.4,
+      duration: 1
+    }
+  },
+}
+
 
 export default function HeroSection() {
   return (
@@ -9,7 +28,11 @@ export default function HeroSection() {
       <div className="aurora"></div> {/* Aurora overlay */}
 
       </div>
-      <section className="anchor">
+      <motion.section 
+      className="anchor"
+      variants={animationList}
+      initial="offScreen"
+      animate="onScreen">
         <div className=' hero-content min-h-screen w-full flex flex-col justify-center items-start text-white'>
         <p className="text-2xl sm:text-6xl p-8 mx-auto ">Hi there!</p>
       <p className="text-xl sm:text-4xl p-8 mx-auto">I am Rino, I bring ideas into digital reality</p>
@@ -25,7 +48,7 @@ export default function HeroSection() {
         Contact me
       </button> */}
         </div>
-</section >
+</motion.section >
 
     </section>
   );

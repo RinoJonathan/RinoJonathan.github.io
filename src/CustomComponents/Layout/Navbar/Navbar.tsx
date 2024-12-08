@@ -5,6 +5,7 @@ import GithubIcon from "../../../assets/GithubIcon";
 import LinkedinIcon from "../../../assets/LinkedinIcon";
 import { motion } from "motion/react";
 
+
 const buttonAnimations = {
   buttonHover: {
     scale : 1.05,
@@ -17,7 +18,20 @@ const buttonAnimations = {
   },
   buttonClick: {
     scale: 0.95
-  }
+  },
+  offScreen : {
+    opacity: 0,
+    y: 100,
+  },
+  onScreen : {
+    opacity : 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      bounce: 0.4,
+      duration: 1
+    }
+  },
 }
 
 
@@ -32,7 +46,8 @@ export default function Navbar() {
   // }
 
   return (
-    <nav className="fixed p-8 z-40 w-full min-h-20 grid grid-cols-12 gap-4 bg-gradient-to-b from-tblack to-transparent ">
+    <nav 
+    className="fixed p-8 z-40 w-full min-h-20 grid grid-cols-12 gap-4 bg-gradient-to-b from-tblack to-transparent ">
         
         {/* { (isMobileOrTablet && menuState) &&         
     <div className="absolute -z-2 bg-red-100  bg-opacity-30  w-56 min-h-8 p-4 py-20 mx-4">
@@ -49,7 +64,10 @@ export default function Navbar() {
           </div>
         </div>} */}
         
-        <div className=" z-10  col-span-2 content-center">
+        <motion.div className=" z-10  col-span-2 content-center"     
+        variants={buttonAnimations}
+        initial="offScreen"
+        animate="onScreen">
           
 
           {/* {isMobileOrTablet ? <button  onClick={toggleMenu}>
@@ -58,9 +76,11 @@ export default function Navbar() {
           <span className="p-4 text-white text-4xl font-serif ">Rino</span>
           </> } */}
           
-          <span className="p-4 text-white text-4xl font-serif ">Rino</span>
+          <Link to={"/"}>
+          <span className="p-4 text-white text-4xl font-serif ">Rino</span></Link>
+
           
-        </div>
+        </motion.div>
         <div className="col-span-6 content-center"></div>
 
         <div className="col-span-4 flex flex-row content-center justify-end ">
@@ -70,6 +90,8 @@ export default function Navbar() {
           className="mx-4 my-auto"
           variants={buttonAnimations}
           
+          initial="offScreen"
+          animate="onScreen"
           whileHover="buttonHover"
           whileTap="buttonClick">
                       
@@ -83,6 +105,8 @@ export default function Navbar() {
           className="mx-4 my-auto"
           variants={buttonAnimations}
           
+          initial="offScreen"
+          animate="onScreen"
           whileHover="buttonHover"
           whileTap="buttonClick">
             
@@ -95,6 +119,8 @@ export default function Navbar() {
           className="mx-4 my-auto" 
           variants={buttonAnimations}
           
+          initial="offScreen"
+          animate="onScreen"
           whileHover="buttonHover"
           whileTap="buttonClick">
             
