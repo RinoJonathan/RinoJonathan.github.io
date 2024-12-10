@@ -11,6 +11,7 @@ import DockerIcon from "@/assets/TechIcons/Tools/DockerIcon";
 import DigitalOceanIcon from "@/assets/TechIcons/Tools/DigitalOceanIcon";
 import GCPIcons from "@/assets/TechIcons/Tools/GCPIcon";
 import FirebaseIcons from "@/assets/TechIcons/Tools/FirebaseIcon";
+import NextjsIcon from "@/assets/TechIcons/Languages/NextjsIcon";
 
 export interface SkillInterface {
     image: React.ElementType;
@@ -25,6 +26,11 @@ export const skillPlaceholder: SkillInterface = {
 };
 
 export const skillList: SkillInterface[] = [
+    {
+        image: NextjsIcon,
+        name: "NextJs",
+        color: "white",
+    },
     {
         image: MongodbIcon,
         name: "Mongodb",
